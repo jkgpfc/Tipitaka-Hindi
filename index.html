@@ -11,12 +11,12 @@
 </style>
 </head>
 <body>
-<header class="hero"><h1>तिपिटक हिंदी</h1><p>स्थायी क्लाउड अनुवाद — GitHub Actions पर स्वतः चलता है, आपके कंप्यूटर से स्वतंत्र</p></header>
+<header class="hero"><h1>तिपिटक हिंदी</h1><p>निःशुल्क स्थायी क्लाउड अनुवाद — OpenAI API या भुगतान के बिना</p></header>
 <div class="top"><div class="topin"><input id="q" class="search" placeholder="सुत्त या पृष्ठ खोजें…"><button id="refresh" class="btn">स्थिति रीफ़्रेश करें</button></div></div>
 <main>
-<div class="notice"><strong>अब translation browser पर निर्भर नहीं है।</strong> GitHub Actions हर 15 मिनट में अगला batch अनुवाद करता है और तैयार हिंदी पृष्ठ इसी repository में स्थायी रूप से save करता है। आपका कंप्यूटर बंद होने पर भी cloud workflow चलता रहेगा। वेबसाइट देखने वाला कोई visitor translation रोक नहीं सकता।</div>
+<div class="notice"><strong>अब कोई OpenAI API key या भुगतान आवश्यक नहीं है।</strong> GitHub Actions हर 15 मिनट में मुक्त open-source English→Hindi model चलाता है और तैयार हिंदी पृष्ठ इसी repository में स्थायी रूप से save करता है। आपका कंप्यूटर बंद होने पर भी cloud workflow चलता रहेगा और कोई visitor translation रोक नहीं सकता।</div>
 <div class="stats"><div class="stat"><b id="completed">0</b>पूर्ण पृष्ठ</div><div class="stat"><b id="total">—</b>कुल पृष्ठ</div><div class="stat"><b id="percent">0%</b>प्रगति</div><div class="stat"><b id="remaining">—</b>शेष</div></div>
-<div class="panel"><h2>क्लाउड अनुवाद प्रगति</h2><div class="progress"><div id="bar"></div></div><div id="status" class="small">प्रगति डेटा लोड हो रहा है…</div><p class="small">मॉडल: <span id="model">—</span> • अंतिम update: <span id="updated">—</span></p></div>
+<div class="panel"><h2>क्लाउड अनुवाद प्रगति</h2><div class="progress"><div id="bar"></div></div><div id="status" class="small">प्रगति डेटा लोड हो रहा है…</div><p class="small">निःशुल्क मॉडल: <span id="model">—</span> • अंतिम update: <span id="updated">—</span></p></div>
 <div class="panel"><h2>सभी Wikipitaka पृष्ठ</h2><p class="small">हरा = स्थायी हिंदी पृष्ठ तैयार। “अनुवाद लंबित” = cloud queue में है।</p><div id="results" class="results"><div class="item">सूची लोड हो रही है…</div></div></div>
 <div class="panel"><h2>VRI-शैली शब्दावली</h2><p>तिपिटक • पालि • धम्म • सुत्त • दीघ • मज्झिम • संयुत्त • अङ्गुत्तर • खुद्दक • शील • समाधि • प्रज्ञा (पञ्ञा) • अनिच्च (अनित्यता) • दुःख • अनत्त • तृष्णा • वेदना (संवेदना) • समता • सति • सम्पजञ्ञ • प्रतीत्य-समुत्पाद • निर्वाण।</p><p class="small">यह VRI-शैली से शब्दावली-संरेखित स्वतंत्र अनुवाद है; VRI-प्रमाणित आधिकारिक संस्करण होने का दावा नहीं है।</p></div>
 </main>

@@ -193,5 +193,70 @@
     "updated_at": "2026-08-23T18:10:40.199140+00:00",
     "model": "Helsinki-NLP/opus-mt-en-hi",
     "engine": "free-open-source"
+  },
+  "22.100 Gaddula Sutta": {
+    "title": "22.100 Gaddula Sutta",
+    "canonical_title": "22.100 Gaddula Sutta",
+    "display_title": "22.100 स्कातान्गाguatemala. kgm",
+    "source_display_title": "22.100 Gaddula Sutta",
+    "file": "pages/2506.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.100_Gaddula_Sutta",
+    "translated_blocks": 22,
+    "total_blocks": 22,
+    "updated_at": "2026-08-23T18:52:54.481491+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "22.2 Devadaha Sutta": {
+    "title": "22.2 Devadaha Sutta",
+    "canonical_title": "22.2 Devadaha Sutta",
+    "display_title": "222 दवा द्राटाक",
+    "source_display_title": "22.2 Devadaha Sutta",
+    "file": "pages/2317.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.2_Devadaha_Sutta",
+    "translated_blocks": 32,
+    "total_blocks": 32,
+    "updated_at": "2026-08-23T18:53:32.476407+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "22.39 Anudhamma Sutta": {
+    "title": "22.39 Anudhamma Sutta",
+    "canonical_title": "22.39 Anudhamma Sutta",
+    "display_title": "229 आउममा सूज़ाआ",
+    "source_display_title": "22.39 Anudhamma Sutta",
+    "file": "pages/2337.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.39_Anudhamma_Sutta",
+    "translated_blocks": 11,
+    "total_blocks": 11,
+    "updated_at": "2026-08-23T18:53:42.846847+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "22.40 Anudhamma Sutta": {
+    "title": "22.40 Anudhamma Sutta",
+    "canonical_title": "22.40 Anudhamma Sutta",
+    "display_title": "2240 आॅमा सूमा",
+    "source_display_title": "22.40 Anudhamma Sutta",
+    "file": "pages/2338.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.40_Anudhamma_Sutta",
+    "translated_blocks": 11,
+    "total_blocks": 11,
+    "updated_at": "2026-08-23T18:53:53.325245+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "22.41 Anudhamma Sutta": {
+    "title": "22.41 Anudhamma Sutta",
+    "canonical_title": "22.41 Anudhamma Sutta",
+    "display_title": "2244 दिमा सूज़ाआ",
+    "source_display_title": "22.41 Anudhamma Sutta",
+    "file": "pages/2339.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.41_Anudhamma_Sutta",
+    "translated_blocks": 11,
+    "total_blocks": 11,
+    "updated_at": "2026-08-23T18:54:03.854178+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
   }
 }

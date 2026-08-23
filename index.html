@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>तिपिटक हिंदी — VRI प्रकाशन-शैली रीडर</title>
+<meta name="description" content="Wikipitaka के प्रत्येक उपलब्ध पृष्ठ का पूर्ण हिंदी ऑन-डिवाइस अनुवाद, स्रोत संरचना और आंतरिक लिंक सहित।">
+<style>
+:root{
+ --paper:#fffdf7;--ink:#292018;--muted:#74685d;--deep:#63350f;--saff:#a05b17;
+ --line:#e5d4bd;--soft:#f8efe3;--card:#fff;--green:#276749;--red:#9b2c2c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",system-ui,sans-serif;line-height:1.78}
+button,input{font:inherit} a{color:#81470f}
+.hero{background:linear-gradient(135deg,#48240c,#955419);color:#fff;text-align:center;padding:48px 20px 38px}
+.hero h1{margin:0;font-size:clamp(2.2rem,6vw,4.7rem);line-height:1.16}
+.hero p{max-width:940px;margin:9px auto;opacity:.95}
+.badge{display:inline-block;border:1px solid #ffffff55;background:#ffffff12;padding:5px 12px;border-radius:999px;margin-top:10px}
+.top{position:sticky;top:0;z-index:60;background:#fffaf2f2;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topin{max-width:1320px;margin:auto;padding:9px 14px;display:flex;align-items:center;gap:8px}
+.brand{font-weight:800;color:var(--deep);white-space:nowrap}
+.search{flex:1;min-width:80px;padding:10px 12px;border:1px solid #cab59b;background:#fff;border-radius:10px}
+.btn{border:0;border-radius:10px;padding:9px 13px;background:var(--deep);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:#efe0cc;color:var(--deep)}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--deep)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.shell{max-width:1320px;margin:auto;padding:24px 18px 72px}
+.view{display:none}.view.on{display:block}
+.notice{background:var(--soft);border:1px solid var(--line);border-left:5px solid var(--saff);border-radius:11px;padding:15px 17px;margin:0 0 18px}
+.hero-actions,.tabs,.actions{display:flex;gap:9px;flex-wrap:wrap}
+.tabs{margin:18px 0}.tab{border:1px solid var(--line);background:#fff;color:var(--deep);border-radius:999px;padding:9px 14px;cursor:pointer}
+.tab.active{background:var(--deep);color:#fff;border-color:var(--deep)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;text-align:center;padding:14px}
+.stat b{display:block;font-size:1.65rem;color:var(--deep)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(16px,3vw,26px);margin:16px 0}
+.panel h2,.panel h3{color:var(--deep);margin-top:.3em}
+.progress{height:12px;background:#eee1d0;border-radius:999px;overflow:hidden;margin:12px 0}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#7a4414,#b97025);transition:width .2s}
+.statusline{color:var(--muted);font-size:.94rem}
+.ok{color:var(--green)}.bad{color:var(--red)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:10px}
+.card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:13px;text-align:left;cursor:pointer;color:var(--ink);transition:.15s}
+.card:hover{transform:translateY(-1px);box-shadow:0 7px 18px #4d2b0b12;border-color:#cba776}
+.card b{display:block;color:var(--deep)}.card small{color:var(--muted)}
+.group{color:var(--deep);font-size:1.32rem;margin:28px 0 10px}
+.reader-head{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:15px}
+.crumb{font-size:.9rem;color:var(--muted)}
+.reader-title{font-size:clamp(1.8rem,4.2vw,3.2rem);color:var(--deep);line-height:1.28;margin:.25em 0}
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.pill{border:1px solid #c9e1d2;background:#edf7f1;color:var(--green);padding:4px 9px;border-radius:999px;font-size:.83rem}
+.pill.wait{border-color:#ead09d;background:#fff6e6;color:#80500a}
+.pill.err{border-color:#e7b8b8;background:#fff0f0;color:var(--red)}
+.articlebox{background:#fff;border:1px solid var(--line);border-radius:16px;padding:clamp(18px,4vw,44px);box-shadow:0 8px 25px #4d2c0b0a}
+.articlebox .mw-parser-output,.articlebox article{max-width:940px;margin:auto}
+.articlebox h1,.articlebox h2,.articlebox h3,.articlebox h4,.articlebox h5{color:#713e10;line-height:1.4;margin-top:1.45em}
+.articlebox h2{border-bottom:1px solid var(--line);padding-bottom:7px}
+.articlebox p,.articlebox li{font-size:1.06rem}
+.articlebox table{border-collapse:collapse;max-width:100%;display:block;overflow:auto}
+.articlebox th,.articlebox td{border:1px solid #d6c5af;padding:7px 9px}
+.articlebox img{max-width:100%;height:auto}
+.articlebox blockquote{border-left:4px solid #c98a43;margin:18px 0;padding:8px 18px;background:#fffaf2}
+.articlebox .source-foot{margin-top:34px;border-top:1px dashed #c9b69d;padding-top:15px;color:var(--muted);font-size:.9rem}
+.loading{text-align:center;padding:55px 20px;color:var(--muted)}
+.spin{width:34px;height:34px;border:4px solid #eadbc7;border-top-color:var(--saff);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.errbox{background:#fff4f4;border:1px solid #e6b7b7;color:#762c2c;border-radius:12px;padding:17px}
+.index-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:15px 0}
+.results{max-height:62vh;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.result{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #eee2d2;background:#fff;padding:10px 12px;cursor:pointer}
+.result:hover{background:#fff8ee}.result:last-child{border-bottom:0}
+.cache-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+details{border:1px solid var(--line);border-radius:12px;padding:10px 13px;background:#fff;margin:10px 0}
+summary{cursor:pointer;font-weight:700;color:var(--deep)}
+code{background:#f4eadc;border-radius:5px;padding:1px 5px}
+footer.site{border-top:1px solid var(--line);padding:28px 18px;text-align:center;color:var(--muted)}
+@media(max-width:720px){.stats{grid-template-columns:1fr 1fr}.brand{display:none}.index-tools{grid-template-columns:1fr}.articlebox p,.articlebox li{font-size:1rem}}
+@media print{.top,.reader-head .actions,.reader-head .pills,footer.site{display:none!important}.shell{max-width:none;padding:0}.articlebox{border:0;box-shadow:none;padding:0}}
+</style>
+</head>
+<body>
+<header class="hero">
+ <h1>तिपिटक हिंदी</h1>
+ <p>Wikipitaka का पूर्ण-पृष्ठ हिंदी रीडर — वीआरआई प्रकाशन-परंपरा के अनुरूप शब्दावली और हिंदी शैली में</p>
+ <span class="badge">पालि • धम्म • सुत्त • शील–समाधि–प्रज्ञा • VRI-शैली शब्दावली</span>
+</header>
+
+<nav class="top">
+ <div class="topin">
+  <span class="brand">☸ हिंदी तिपिटक</span>
+  <input id="globalSearch" class="search" type="search" placeholder="Wikipitaka में पृष्ठ / विषय खोजें…">
+  <button id="searchBtn" class="btn alt">खोजें</button>
+  <button id="homeBtn" class="btn alt">मुख्य सूची</button>
+ </div>
+</nav>
+
+<main class="shell">
+<!-- HOME -->
+<section id="homeView" class="view on">
+ <div class="notice">
+  <strong>यह संस्करण कैसे अलग है:</strong> किसी सुत्त को “विस्तार” देने के लिए कृत्रिम पैराग्राफ नहीं बनाए जाते।
+  Wikipitaka का वास्तविक पृष्ठ लिया जाता है और उसका <strong>पूरा पाठ</strong> वीआरआई-प्रकाशन शैली की मानकीकृत धम्म-शब्दावली में हिंदी रूपांतरित होने के बाद ही दिखाया जाता है।
+  मूल पालि/देवनागरी भाग जहाँ पहचाने जा सकें, उन्हें सुरक्षित रखा जाता है।
+ </div>
+
+ <div class="panel" style="border-left:5px solid var(--saff)">
+  <h2>वीआरआई हिंदी प्रकाशन-शैली</h2>
+  <p><strong>मानक शब्दावली:</strong> तिपिटक • पालि • धम्म • सुत्त • विनय पिटक • सुत्तपिटक • अभिधम्म पिटक •
+  दीघ • मज्झिम • संयुत्त • अङ्गुत्तर • खुद्दक • शील • समाधि • प्रज्ञा (पञ्ञा) •
+  अनिच्च (अनित्यता) • दुःख • अनत्त • तृष्णा • वेदना (संवेदना) • समता •
+  सति • सम्पजञ्ञ • प्रतीत्य-समुत्पाद • निर्वाण।</p>
+  <p class="statusline"><strong>स्थिति:</strong> यह VRI के प्रकाशित हिंदी प्रयोग से शैली और शब्दावली-संरेखित स्वतंत्र संस्करण है;
+  इसे VRI द्वारा प्रमाणित/अधिकृत अनुवाद नहीं कहा गया है। जहाँ VRI का प्रमाणित हिंदी पाठ उपलब्ध है, उसे प्राथमिक संदर्भ माना जाना चाहिए।</p>
+ </div>
+
+ <div class="stats">
+   <div class="stat"><b>5,414</b>स्रोत साइट पर रिपोर्टेड पृष्ठ</div>
+   <div class="stat"><b>34</b>दीघ निकाय पूर्ण हिंदी स्रोत</div>
+   <div class="stat"><b>152</b>मज्झिम निकाय पूर्ण हिंदी स्रोत</div>
+   <div class="stat"><b>∞</b>आंतरिक लिंक पूर्ण-पृष्ठ अनुवाद</div>
+ </div>
+
+ <div class="panel">
+   <h2>1. सम्पूर्ण Wikipitaka — VRI-शैली हिंदी इंजन</h2>
+   <p>पहली बार केवल एक बार English→Hindi भाषा मॉडल सक्रिय/डाउनलोड करना पड़ सकता है। इसके बाद प्रत्येक अनुवाद पर VRI-शैली धम्म-शब्दावली और वर्तनी मानक स्वतः लागू होते हैं।
+   इसके बाद अनुवाद आपके कंप्यूटर पर होता है और पृष्ठ इस ब्राउज़र में कैश होते जाते हैं।</p>
+   <div class="actions">
+     <button class="btn" id="enableTranslatorBtn">VRI-शैली पूर्ण हिंदी अनुवाद सक्रिय करें</button>
+     <button class="btn alt" id="openMainBtn">Wikipitaka मुख्य पृष्ठ हिंदी में खोलें</button>
+     <button class="btn ghost" id="allPagesBtn">सभी पृष्ठों की सूची लोड करें</button>
+   </div>
+   <div class="progress"><div id="modelBar"></div></div>
+   <div id="translatorStatus" class="statusline">स्थिति: अभी सक्रिय नहीं। GitHub Pages (HTTPS) पर खोलें।</div>
+ </div>
+
+ <div class="panel">
+  <h2>2. पूरे तिपिटक-संसाधन में खोजें</h2>
+  <div class="index-tools">
+    <input id="wikiSearchInput" class="search" placeholder="जैसे Satipatthana, Vinaya, Yamaka, Dhammapada…">
+    <button id="wikiSearchBtn" class="btn">खोजें</button>
+  </div>
+  <div id="searchResults" class="results" style="display:none"></div>
+ </div>
+
+ <div class="panel">
+  <h2>3. दीघ + मज्झिम निकाय — पूर्ण हिंदी पाठ</h2>
+  <p>दीघ निकाय के 34 और मज्झिम निकाय के 152 सुत्तों के लिए पूर्ण ऐतिहासिक हिंदी डिजिटल पाठ का
+  अलग तेज़ रीडर भी रखा गया है। इसमें कोई summary page नहीं है।</p>
+  <div class="tabs">
+   <button class="tab active" data-classic="DN">दीघ निकाय — 34</button>
+   <button class="tab" data-classic="MN">मज्झिम निकाय — 152</button>
+  </div>
+  <input id="classicSearch" class="search" style="width:100%;margin-bottom:12px" placeholder="DN/MN संख्या या Pali नाम खोजें…">
+  <div id="classicBody"></div>
+ </div>
+
+ <div class="panel">
+   <h2>4. पूरी साइट को स्थानीय रूप से materialize करें</h2>
+   <p>यह बटन namespace 0 के सभी Wikipitaka पृष्ठ खोजकर एक-एक करके <strong>पूर्ण</strong> अनुवाद एवं IndexedDB cache में रखता है।
+   प्रक्रिया resumable है—टैब बंद होने पर पहले से पूर्ण पृष्ठ सुरक्षित रहते हैं। हजारों पृष्ठ होने के कारण इसमें लंबा समय लग सकता है।</p>
+   <div class="cache-row">
+    <button id="bulkBtn" class="btn">सम्पूर्ण साइट अनुवाद + कैश शुरू करें</button>
+    <button id="pauseBtn" class="btn alt" disabled>रोकें</button>
+    <button id="cacheInfoBtn" class="btn ghost">कैश स्थिति</button>
+   </div>
+   <div class="progress"><div id="bulkBar"></div></div>
+   <div id="bulkStatus" class="statusline">अभी शुरू नहीं हुआ।</div>
+ </div>
+
+ <details>
+   <summary>तकनीकी / लाइसेंस सूचना</summary>
+   <p>Wikipitaka का community text सामान्यतः CC BY-SA के अंतर्गत बताया गया है, जब तक किसी पृष्ठ पर अन्यथा न लिखा हो।
+   प्रत्येक अनूदित पृष्ठ के अंत में मूल URL दिया जाता है। बाहरी PDFs, images और third-party translations की शर्तें अलग हो सकती हैं।</p>
+   <p>ऑन-डिवाइस अनुवाद के लिए आधुनिक desktop Chrome/Edge का Translator API उपयोग होता है।
+   यह HTTPS secure context में चलना चाहिए; इसलिए GitHub Pages पर host करना स्थानीय <code>file://</code> खोलने से बेहतर है।</p>
+ </details>
+</section>
+
+<!-- ALL PAGES -->
+<section id="allPagesView" class="view">
+ <div class="reader-head">
+  <div class="crumb"><a href="#" class="goHome">मुख्य सूची</a> › सभी Wikipitaka पृष्ठ</div>
+  <h1 class="reader-title">सभी पृष्ठ</h1>
+  <p id="allPagesCount" class="statusline"></p>
+  <input id="allPagesFilter" class="search" style="width:100%" placeholder="5,000+ शीर्षकों में फ़िल्टर करें…">
+ </div>
+ <div id="allPagesResults" class="results"></div>
+</section>
+
+<!-- WIKI FULL READER -->
+<section id="wikiReaderView" class="view">
+ <div class="reader-head">
+  <div class="crumb"><a href="#" class="goHome">मुख्य सूची</a> › <span id="wikiCrumb">Wikipitaka</span></div>
+  <h1 id="wikiTitle" class="reader-title">लोड हो रहा है…</h1>
+  <div class="pills">
+   <span id="wikiStatus" class="pill wait">पूर्ण पृष्ठ तैयार हो रहा है…</span>
+   <span id="wikiStats" class="pill" style="display:none"></span>
+  </div>
+  <div class="progress"><div id="pageBar"></div></div>
+  <div class="actions">
+   <button class="btn alt goBack">← वापस</button>
+   <button class="btn alt goHome">मुख्य सूची</button>
+   <button class="btn alt" onclick="window.print()">प्रिंट</button>
+   <a id="wikiSourceLink" class="btn ghost" target="_blank" rel="noopener">मूल English पृष्ठ</a>
+  </div>
+ </div>
+ <div id="wikiHost" class="articlebox"></div>
+</section>
+
+<!-- CLASSIC FULL READER -->
+<section id="classicReaderView" class="view">
+ <div class="reader-head">
+  <div class="crumb"><a href="#" class="goHome">मुख्य सूची</a> › <span id="classicCrumb"></span></div>
+  <h1 id="classicTitle" class="reader-title">लोड हो रहा है…</h1>
+  <div class="pills"><span id="classicStatus" class="pill wait">पूर्ण स्रोत-पाठ लोड हो रहा है…</span><span id="classicStats" class="pill" style="display:none"></span></div>
+  <div class="actions">
+   <button class="btn alt" id="classicPrev">← पिछला</button>
+   <button class="btn alt" id="classicNext">अगला →</button>
+   <button class="btn alt goHome">मुख्य सूची</button>
+   <a id="classicSource" class="btn ghost" target="_blank" rel="noopener">डिजिटल स्रोत</a>
+  </div>
+ </div>
+ <div id="classicHost" class="articlebox"></div>
+</section>
+</main>
+
+<footer class="site">
+ <strong>तिपिटक हिंदी — VRI-शैली संस्करण</strong><br>
+ स्रोत-सम्मानित, पूर्ण-पृष्ठ हिंदी अध्ययन रीडर। अधूरा पाठ “पूर्ण” बताकर नहीं दिखाया जाता।
+</footer>
+
+<script>
+"use strict";
+const CLASSIC=[{"ref":"dn1","nikaya":"DN","number":1,"pali":"Brahmajāla","path":"html_text/hi/pli/sutta/dn/dn1.html"},{"ref":"dn2","nikaya":"DN","number":2,"pali":"Sāmaññaphala","path":"html_text/hi/pli/sutta/dn/dn2.html"},{"ref":"dn3","nikaya":"DN","number":3,"pali":"Ambaṭṭha","path":"html_text/hi/pli/sutta/dn/dn3.html"},{"ref":"dn4","nikaya":"DN","number":4,"pali":"Soṇadaṇḍa","path":"html_text/hi/pli/sutta/dn/dn4.html"},{"ref":"dn5","nikaya":"DN","number":5,"pali":"Kūṭadanta","path":"html_text/hi/pli/sutta/dn/dn5.html"},{"ref":"dn6","nikaya":"DN","number":6,"pali":"Mahāli","path":"html_text/hi/pli/sutta/dn/dn6.html"},{"ref":"dn7","nikaya":"DN","number":7,"pali":"Jāliya","path":"html_text/hi/pli/sutta/dn/dn7.html"},{"ref":"dn8","nikaya":"DN","number":8,"pali":"Kassapasīhanāda","path":"html_text/hi/pli/sutta/dn/dn8.html"},{"ref":"dn9","nikaya":"DN","number":9,"pali":"Poṭṭhapāda","path":"html_text/hi/pli/sutta/dn/dn9.html"},{"ref":"dn10","nikaya":"DN","number":10,"pali":"Subha","path":"html_text/hi/pli/sutta/dn/dn10.html"},{"ref":"dn11","nikaya":"DN","number":11,"pali":"Kevaṭṭa","path":"html_text/hi/pli/sutta/dn/dn11.html"},{"ref":"dn12","nikaya":"DN","number":12,"pali":"Lohicca","path":"html_text/hi/pli/sutta/dn/dn12.html"},{"ref":"dn13","nikaya":"DN","number":13,"pali":"Tevijja","path":"html_text/hi/pli/sutta/dn/dn13.html"},{"ref":"dn14","nikaya":"DN","number":14,"pali":"Mahāpadāna","path":"html_text/hi/pli/sutta/dn/dn14.html"},{"ref":"dn15","nikaya":"DN","number":15,"pali":"Mahānidāna","path":"html_text/hi/pli/sutta/dn/dn15.html"},{"ref":"dn16","nikaya":"DN","number":16,"pali":"Mahāparinibbāna","path":"html_text/hi/pli/sutta/dn/dn16.html"},{"ref":"dn17","nikaya":"DN","number":17,"pali":"Mahāsudassana","path":"html_text/hi/pli/sutta/dn/dn17.html"},{"ref":"dn18","nikaya":"DN","number":18,"pali":"Janavasabha","path":"html_text/hi/pli/sutta/dn/dn18.html"},{"ref":"dn19","nikaya":"DN","number":19,"pali":"Mahāgovinda","path":"html_text/hi/pli/sutta/dn/dn19.html"},{"ref":"dn20","nikaya":"DN","number":20,"pali":"Mahāsamaya","path":"html_text/hi/pli/sutta/dn/dn20.html"},{"ref":"dn21","nikaya":"DN","number":21,"pali":"Sakkapañha","path":"html_text/hi/pli/sutta/dn/dn21.html"},{"ref":"dn22","nikaya":"DN","number":22,"pali":"Mahāsatipaṭṭhāna","path":"html_text/hi/pli/sutta/dn/dn22.html"},{"ref":"dn23","nikaya":"DN","number":23,"pali":"Pāyāsi","path":"html_text/hi/pli/sutta/dn/dn23.html"},{"ref":"dn24","nikaya":"DN","number":24,"pali":"Pāṭika","path":"html_text/hi/pli/sutta/dn/dn24.html"},{"ref":"dn25","nikaya":"DN","number":25,"pali":"Udumbarikasīhanāda","path":"html_text/hi/pli/sutta/dn/dn25.html"},{"ref":"dn26","nikaya":"DN","number":26,"pali":"Cakkavattisīhanāda","path":"html_text/hi/pli/sutta/dn/dn26.html"},{"ref":"dn27","nikaya":"DN","number":27,"pali":"Aggañña","path":"html_text/hi/pli/sutta/dn/dn27.html"},{"ref":"dn28","nikaya":"DN","number":28,"pali":"Sampasādanīya","path":"html_text/hi/pli/sutta/dn/dn28.html"},{"ref":"dn29","nikaya":"DN","number":29,"pali":"Pāsādika","path":"html_text/hi/pli/sutta/dn/dn29.html"},{"ref":"dn30","nikaya":"DN","number":30,"pali":"Lakkhaṇa","path":"html_text/hi/pli/sutta/dn/dn30.html"},{"ref":"dn31","nikaya":"DN","number":31,"pali":"Sigālovāda","path":"html_text/hi/pli/sutta/dn/dn31.html"},{"ref":"dn32","nikaya":"DN","number":32,"pali":"Āṭānāṭiya","path":"html_text/hi/pli/sutta/dn/dn32.html"},{"ref":"dn33","nikaya":"DN","number":33,"pali":"Saṅgīti","path":"html_text/hi/pli/sutta/dn/dn33.html"},{"ref":"dn34","nikaya":"DN","number":34,"pali":"Dasuttara","path":"html_text/hi/pli/sutta/dn/dn34.html"},{"ref":"mn1","nikaya":"MN","number":1,"pali":"Mūlapariyāya","path":"html_text/hi/pli/sutta/mn/mn1.html"},{"ref":"mn2","nikaya":"MN","number":2,"pali":"Sabbāsava","path":"html_text/hi/pli/sutta/mn/mn2.html"},{"ref":"mn3","nikaya":"MN","number":3,"pali":"Dhammadāyāda","path":"html_text/hi/pli/sutta/mn/mn3.html"},{"ref":"mn4","nikaya":"MN","number":4,"pali":"Bhayabherava","path":"html_text/hi/pli/sutta/mn/mn4.html"},{"ref":"mn5","nikaya":"MN","number":5,"pali":"Anaṅgaṇa","path":"html_text/hi/pli/sutta/mn/mn5.html"},{"ref":"mn6","nikaya":"MN","number":6,"pali":"Ākaṅkheyya","path":"html_text/hi/pli/sutta/mn/mn6.html"},{"ref":"mn7","nikaya":"MN","number":7,"pali":"Vatthūpama","path":"html_text/hi/pli/sutta/mn/mn7.html"},{"ref":"mn8","nikaya":"MN","number":8,"pali":"Sallekha","path":"html_text/hi/pli/sutta/mn/mn8.html"},{"ref":"mn9","nikaya":"MN","number":9,"pali":"Sammādiṭṭhi","path":"html_text/hi/pli/sutta/mn/mn9.html"},{"ref":"mn10","nikaya":"MN","number":10,"pali":"Satipaṭṭhāna","path":"html_text/hi/pli/sutta/mn/mn10.html"},{"ref":"mn11","nikaya":"MN","number":11,"pali":"Cūḷasīhanāda","path":"html_text/hi/pli/sutta/mn/mn11.html"},{"ref":"mn12","nikaya":"MN","number":12,"pali":"Mahāsīhanāda","path":"html_text/hi/pli/sutta/mn/mn12.html"},{"ref":"mn13","nikaya":"MN","number":13,"pali":"Mahādukkhakkhandha","path":"html_text/hi/pli/sutta/mn/mn13.html"},{"ref":"mn14","nikaya":"MN","number":14,"pali":"Cūḷadukkhakkhandha","path":"html_text/hi/pli/sutta/mn/mn14.html"},{"ref":"mn15","nikaya":"MN","number":15,"pali":"Anumāna","path":"html_text/hi/pli/sutta/mn/mn15.html"},{"ref":"mn16","nikaya":"MN","number":16,"pali":"Cetokhila","path":"html_text/hi/pli/sutta/mn/mn16.html"},{"ref":"mn17","nikaya":"MN","number":17,"pali":"Vanapattha","path":"html_text/hi/pli/sutta/mn/mn17.html"},{"ref":"mn18","nikaya":"MN","number":18,"pali":"Madhupiṇḍika","path":"html_text/hi/pli/sutta/mn/mn18.html"},{"ref":"mn19","nikaya":"MN","number":19,"pali":"Dvedhāvitakka","path":"html_text/hi/pli/sutta/mn/mn19.html"},{"ref":"mn20","nikaya":"MN","number":20,"pali":"Vitakkasaṇṭhāna","path":"html_text/hi/pli/sutta/mn/mn20.html"},{"ref":"mn21","nikaya":"MN","number":21,"pali":"Kakacūpama","path":"html_text/hi/pli/sutta/mn/mn21.html"},{"ref":"mn22","nikaya":"MN","number":22,"pali":"Alagaddūpama","path":"html_text/hi/pli/sutta/mn/mn22.html"},{"ref":"mn23","nikaya":"MN","number":23,"pali":"Vammika","path":"html_text/hi/pli/sutta/mn/mn23.html"},{"ref":"mn24","nikaya":"MN","number":24,"pali":"Rathavinīta","path":"html_text/hi/pli/sutta/mn/mn24.html"},{"ref":"mn25","nikaya":"MN","number":25,"pali":"Nivāpa","path":"html_text/hi/pli/sutta/mn/mn25.html"},{"ref":"mn26","nikaya":"MN","number":26,"pali":"Ariyapariyesanā","path":"html_text/hi/pli/sutta/mn/mn26.html"},{"ref":"mn27","nikaya":"MN","number":27,"pali":"Cūḷahatthipadopama","path":"html_text/hi/pli/sutta/mn/mn27.html"},{"ref":"mn28","nikaya":"MN","number":28,"pali":"Mahāhatthipadopama","path":"html_text/hi/pli/sutta/mn/mn28.html"},{"ref":"mn29","nikaya":"MN","number":29,"pali":"Mahāsāropama","path":"html_text/hi/pli/sutta/mn/mn29.html"},{"ref":"mn30","nikaya":"MN","number":30,"pali":"Cūḷasāropama","path":"html_text/hi/pli/sutta/mn/mn30.html"},{"ref":"mn31","nikaya":"MN","number":31,"pali":"Cūḷagosiṅga","path":"html_text/hi/pli/sutta/mn/mn31.html"},{"ref":"mn32","nikaya":"MN","number":32,"pali":"Mahāgosiṅga","path":"html_text/hi/pli/sutta/mn/mn32.html"},{"ref":"mn33","nikaya":"MN","number":33,"pali":"Mahāgopālaka","path":"html_text/hi/pli/sutta/mn/mn33.html"},{"ref":"mn34","nikaya":"MN","number":34,"pali":"Cūḷagopālaka","path":"html_text/hi/pli/sutta/mn/mn34.html"},{"ref":"mn35","nikaya":"MN","number":35,"pali":"Cūḷasaccaka","path":"html_text/hi/pli/sutta/mn/mn35.html"},{"ref":"mn36","nikaya":"MN","number":36,"pali":"Mahāsaccaka","path":"html_text/hi/pli/sutta/mn/mn36.html"},{"ref":"mn37","nikaya":"MN","number":37,"pali":"Cūḷataṇhāsaṅkhaya","path":"html_text/hi/pli/sutta/mn/mn37.html"},{"ref":"mn38","nikaya":"MN","number":38,"pali":"Mahātaṇhāsaṅkhaya","path":"html_text/hi/pli/sutta/mn/mn38.html"},{"ref":"mn39","nikaya":"MN","number":39,"pali":"Mahā-Assapura","path":"html_text/hi/pli/sutta/mn/mn39.html"},{"ref":"mn40","nikaya":"MN","number":40,"pali":"Cūḷa-Assapura","path":"html_text/hi/pli/sutta/mn/mn40.html"},{"ref":"mn41","nikaya":"MN","number":41,"pali":"Sāleyyaka","path":"html_text/hi/pli/sutta/mn/mn41.html"},{"ref":"mn42","nikaya":"MN","number":42,"pali":"Verañjaka","path":"html_text/hi/pli/sutta/mn/mn42.html"},{"ref":"mn43","nikaya":"MN","number":43,"pali":"Mahāvedalla","path":"html_text/hi/pli/sutta/mn/mn43.html"},{"ref":"mn44","nikaya":"MN","number":44,"pali":"Cūḷavedalla","path":"html_text/hi/pli/sutta/mn/mn44.html"},{"ref":"mn45","nikaya":"MN","number":45,"pali":"Cūḷadhammasamādāna","path":"html_text/hi/pli/sutta/mn/mn45.html"},{"ref":"mn46","nikaya":"MN","number":46,"pali":"Mahādhammasamādāna","path":"html_text/hi/pli/sutta/mn/mn46.html"},{"ref":"mn47","nikaya":"MN","number":47,"pali":"Vīmaṃsaka","path":"html_text/hi/pli/sutta/mn/mn47.html"},{"ref":"mn48","nikaya":"MN","number":48,"pali":"Kosambiya","path":"html_text/hi/pli/sutta/mn/mn48.html"},{"ref":"mn49","nikaya":"MN","number":49,"pali":"Brahmanimantanika","path":"html_text/hi/pli/sutta/mn/mn49.html"},{"ref":"mn50","nikaya":"MN","number":50,"pali":"Māratajjanīya","path":"html_text/hi/pli/sutta/mn/mn50.html"},{"ref":"mn51","nikaya":"MN","number":51,"pali":"Kandaraka","path":"html_text/hi/pli/sutta/mn/mn51.html"},{"ref":"mn52","nikaya":"MN","number":52,"pali":"Aṭṭhakanāgara","path":"html_text/hi/pli/sutta/mn/mn52.html"},{"ref":"mn53","nikaya":"MN","number":53,"pali":"Sekha","path":"html_text/hi/pli/sutta/mn/mn53.html"},{"ref":"mn54","nikaya":"MN","number":54,"pali":"Potaliya","path":"html_text/hi/pli/sutta/mn/mn54.html"},{"ref":"mn55","nikaya":"MN","number":55,"pali":"Jīvaka","path":"html_text/hi/pli/sutta/mn/mn55.html"},{"ref":"mn56","nikaya":"MN","number":56,"pali":"Upāli","path":"html_text/hi/pli/sutta/mn/mn56.html"},{"ref":"mn57","nikaya":"MN","number":57,"pali":"Kukkuravatika","path":"html_text/hi/pli/sutta/mn/mn57.html"},{"ref":"mn58","nikaya":"MN","number":58,"pali":"Abhayarājakumāra","path":"html_text/hi/pli/sutta/mn/mn58.html"},{"ref":"mn59","nikaya":"MN","number":59,"pali":"Bahuvedanīya","path":"html_text/hi/pli/sutta/mn/mn59.html"},{"ref":"mn60","nikaya":"MN","number":60,"pali":"Apaṇṇaka","path":"html_text/hi/pli/sutta/mn/mn60.html"},{"ref":"mn61","nikaya":"MN","number":61,"pali":"Ambalaṭṭhikarāhulovāda","path":"html_text/hi/pli/sutta/mn/mn61.html"},{"ref":"mn62","nikaya":"MN","number":62,"pali":"Mahārāhulovāda","path":"html_text/hi/pli/sutta/mn/mn62.html"},{"ref":"mn63","nikaya":"MN","number":63,"pali":"Cūḷamāluṅkya","path":"html_text/hi/pli/sutta/mn/mn63.html"},{"ref":"mn64","nikaya":"MN","number":64,"pali":"Mahāmāluṅkya","path":"html_text/hi/pli/sutta/mn/mn64.html"},{"ref":"mn65","nikaya":"MN","number":65,"pali":"Bhaddāli","path":"html_text/hi/pli/sutta/mn/mn65.html"},{"ref":"mn66","nikaya":"MN","number":66,"pali":"Laṭukikopama","path":"html_text/hi/pli/sutta/mn/mn66.html"},{"ref":"mn67","nikaya":"MN","number":67,"pali":"Cātumā","path":"html_text/hi/pli/sutta/mn/mn67.html"},{"ref":"mn68","nikaya":"MN","number":68,"pali":"Naḷakapāna","path":"html_text/hi/pli/sutta/mn/mn68.html"},{"ref":"mn69","nikaya":"MN","number":69,"pali":"Gulissāni","path":"html_text/hi/pli/sutta/mn/mn69.html"},{"ref":"mn70","nikaya":"MN","number":70,"pali":"Kīṭāgiri","path":"html_text/hi/pli/sutta/mn/mn70.html"},{"ref":"mn71","nikaya":"MN","number":71,"pali":"Tevijjavacchagotta","path":"html_text/hi/pli/sutta/mn/mn71.html"},{"ref":"mn72","nikaya":"MN","number":72,"pali":"Aggivacchagotta","path":"html_text/hi/pli/sutta/mn/mn72.html"},{"ref":"mn73","nikaya":"MN","number":73,"pali":"Mahāvacchagotta","path":"html_text/hi/pli/sutta/mn/mn73.html"},{"ref":"mn74","nikaya":"MN","number":74,"pali":"Dīghanakha","path":"html_text/hi/pli/sutta/mn/mn74.html"},{"ref":"mn75","nikaya":"MN","number":75,"pali":"Māgaṇḍiya","path":"html_text/hi/pli/sutta/mn/mn75.html"},{"ref":"mn76","nikaya":"MN","number":76,"pali":"Sandaka","path":"html_text/hi/pli/sutta/mn/mn76.html"},{"ref":"mn77","nikaya":"MN","number":77,"pali":"Mahāsakuludāyi","path":"html_text/hi/pli/sutta/mn/mn77.html"},{"ref":"mn78","nikaya":"MN","number":78,"pali":"Samaṇamuṇḍika","path":"html_text/hi/pli/sutta/mn/mn78.html"},{"ref":"mn79","nikaya":"MN","number":79,"pali":"Cūḷasakuludāyi","path":"html_text/hi/pli/sutta/mn/mn79.html"},{"ref":"mn80","nikaya":"MN","number":80,"pali":"Vekhanassa","path":"html_text/hi/pli/sutta/mn/mn80.html"},{"ref":"mn81","nikaya":"MN","number":81,"pali":"Ghaṭīkāra","path":"html_text/hi/pli/sutta/mn/mn81.html"},{"ref":"mn82","nikaya":"MN","number":82,"pali":"Raṭṭhapāla","path":"html_text/hi/pli/sutta/mn/mn82.html"},{"ref":"mn83","nikaya":"MN","number":83,"pali":"Makhādeva","path":"html_text/hi/pli/sutta/mn/mn83.html"},{"ref":"mn84","nikaya":"MN","number":84,"pali":"Madhura","path":"html_text/hi/pli/sutta/mn/mn84.html"},{"ref":"mn85","nikaya":"MN","number":85,"pali":"Bodhirājakumāra","path":"html_text/hi/pli/sutta/mn/mn85.html"},{"ref":"mn86","nikaya":"MN","number":86,"pali":"Aṅgulimāla","path":"html_text/hi/pli/sutta/mn/mn86.html"},{"ref":"mn87","nikaya":"MN","number":87,"pali":"Piyajātika","path":"html_text/hi/pli/sutta/mn/mn87.html"},{"ref":"mn88","nikaya":"MN","number":88,"pali":"Bāhitika","path":"html_text/hi/pli/sutta/mn/mn88.html"},{"ref":"mn89","nikaya":"MN","number":89,"pali":"Dhammacetiya","path":"html_text/hi/pli/sutta/mn/mn89.html"},{"ref":"mn90","nikaya":"MN","number":90,"pali":"Kaṇṇakatthala","path":"html_text/hi/pli/sutta/mn/mn90.html"},{"ref":"mn91","nikaya":"MN","number":91,"pali":"Brahmāyu","path":"html_text/hi/pli/sutta/mn/mn91.html"},{"ref":"mn92","nikaya":"MN","number":92,"pali":"Sela","path":"html_text/hi/pli/sutta/mn/mn92.html"},{"ref":"mn93","nikaya":"MN","number":93,"pali":"Assalāyana","path":"html_text/hi/pli/sutta/mn/mn93.html"},{"ref":"mn94","nikaya":"MN","number":94,"pali":"Ghoṭamukha","path":"html_text/hi/pli/sutta/mn/mn94.html"},{"ref":"mn95","nikaya":"MN","number":95,"pali":"Caṅkī","path":"html_text/hi/pli/sutta/mn/mn95.html"},{"ref":"mn96","nikaya":"MN","number":96,"pali":"Esukārī","path":"html_text/hi/pli/sutta/mn/mn96.html"},{"ref":"mn97","nikaya":"MN","number":97,"pali":"Dhānañjāni","path":"html_text/hi/pli/sutta/mn/mn97.html"},{"ref":"mn98","nikaya":"MN","number":98,"pali":"Vāseṭṭha","path":"html_text/hi/pli/sutta/mn/mn98.html"},{"ref":"mn99","nikaya":"MN","number":99,"pali":"Subha","path":"html_text/hi/pli/sutta/mn/mn99.html"},{"ref":"mn100","nikaya":"MN","number":100,"pali":"Saṅgārava","path":"html_text/hi/pli/sutta/mn/mn100.html"},{"ref":"mn101","nikaya":"MN","number":101,"pali":"Devadaha","path":"html_text/hi/pli/sutta/mn/mn101.html"},{"ref":"mn102","nikaya":"MN","number":102,"pali":"Pañcattaya","path":"html_text/hi/pli/sutta/mn/mn102.html"},{"ref":"mn103","nikaya":"MN","number":103,"pali":"Kinti","path":"html_text/hi/pli/sutta/mn/mn103.html"},{"ref":"mn104","nikaya":"MN","number":104,"pali":"Sāmagāma","path":"html_text/hi/pli/sutta/mn/mn104.html"},{"ref":"mn105","nikaya":"MN","number":105,"pali":"Sunakkhatta","path":"html_text/hi/pli/sutta/mn/mn105.html"},{"ref":"mn106","nikaya":"MN","number":106,"pali":"Āneñjasappāya","path":"html_text/hi/pli/sutta/mn/mn106.html"},{"ref":"mn107","nikaya":"MN","number":107,"pali":"Gaṇakamoggallāna","path":"html_text/hi/pli/sutta/mn/mn107.html"},{"ref":"mn108","nikaya":"MN","number":108,"pali":"Gopakamoggallāna","path":"html_text/hi/pli/sutta/mn/mn108.html"},{"ref":"mn109","nikaya":"MN","number":109,"pali":"Mahāpuṇṇama","path":"html_text/hi/pli/sutta/mn/mn109.html"},{"ref":"mn110","nikaya":"MN","number":110,"pali":"Cūḷapuṇṇama","path":"html_text/hi/pli/sutta/mn/mn110.html"},{"ref":"mn111","nikaya":"MN","number":111,"pali":"Anupada","path":"html_text/hi/pli/sutta/mn/mn111.html"},{"ref":"mn112","nikaya":"MN","number":112,"pali":"Chabbisodhana","path":"html_text/hi/pli/sutta/mn/mn112.html"},{"ref":"mn113","nikaya":"MN","number":113,"pali":"Sappurisa","path":"html_text/hi/pli/sutta/mn/mn113.html"},{"ref":"mn114","nikaya":"MN","number":114,"pali":"Sevitabbāsevitabba","path":"html_text/hi/pli/sutta/mn/mn114.html"},{"ref":"mn115","nikaya":"MN","number":115,"pali":"Bahudhātuka","path":"html_text/hi/pli/sutta/mn/mn115.html"},{"ref":"mn116","nikaya":"MN","number":116,"pali":"Isigili","path":"html_text/hi/pli/sutta/mn/mn116.html"},{"ref":"mn117","nikaya":"MN","number":117,"pali":"Mahācattārīsaka","path":"html_text/hi/pli/sutta/mn/mn117.html"},{"ref":"mn118","nikaya":"MN","number":118,"pali":"Ānāpānasati","path":"html_text/hi/pli/sutta/mn/mn118.html"},{"ref":"mn119","nikaya":"MN","number":119,"pali":"Kāyagatāsati","path":"html_text/hi/pli/sutta/mn/mn119.html"},{"ref":"mn120","nikaya":"MN","number":120,"pali":"Saṅkhārupapatti","path":"html_text/hi/pli/sutta/mn/mn120.html"},{"ref":"mn121","nikaya":"MN","number":121,"pali":"Cūḷasuññata","path":"html_text/hi/pli/sutta/mn/mn121.html"},{"ref":"mn122","nikaya":"MN","number":122,"pali":"Mahāsuññata","path":"html_text/hi/pli/sutta/mn/mn122.html"},{"ref":"mn123","nikaya":"MN","number":123,"pali":"Acchariya-abbhuta","path":"html_text/hi/pli/sutta/mn/mn123.html"},{"ref":"mn124","nikaya":"MN","number":124,"pali":"Bakkula","path":"html_text/hi/pli/sutta/mn/mn124.html"},{"ref":"mn125","nikaya":"MN","number":125,"pali":"Dantabhūmi","path":"html_text/hi/pli/sutta/mn/mn125.html"},{"ref":"mn126","nikaya":"MN","number":126,"pali":"Bhūmija","path":"html_text/hi/pli/sutta/mn/mn126.html"},{"ref":"mn127","nikaya":"MN","number":127,"pali":"Anuruddha","path":"html_text/hi/pli/sutta/mn/mn127.html"},{"ref":"mn128","nikaya":"MN","number":128,"pali":"Upakkilesa","path":"html_text/hi/pli/sutta/mn/mn128.html"},{"ref":"mn129","nikaya":"MN","number":129,"pali":"Bālapaṇḍita","path":"html_text/hi/pli/sutta/mn/mn129.html"},{"ref":"mn130","nikaya":"MN","number":130,"pali":"Devadūta","path":"html_text/hi/pli/sutta/mn/mn130.html"},{"ref":"mn131","nikaya":"MN","number":131,"pali":"Bhaddekaratta","path":"html_text/hi/pli/sutta/mn/mn131.html"},{"ref":"mn132","nikaya":"MN","number":132,"pali":"Ānandabhaddekaratta","path":"html_text/hi/pli/sutta/mn/mn132.html"},{"ref":"mn133","nikaya":"MN","number":133,"pali":"Mahākaccānabhaddekaratta","path":"html_text/hi/pli/sutta/mn/mn133.html"},{"ref":"mn134","nikaya":"MN","number":134,"pali":"Lomasakaṅgiyabhaddekaratta","path":"html_text/hi/pli/sutta/mn/mn134.html"},{"ref":"mn135","nikaya":"MN","number":135,"pali":"Cūḷakammavibhaṅga","path":"html_text/hi/pli/sutta/mn/mn135.html"},{"ref":"mn136","nikaya":"MN","number":136,"pali":"Mahākammavibhaṅga","path":"html_text/hi/pli/sutta/mn/mn136.html"},{"ref":"mn137","nikaya":"MN","number":137,"pali":"Saḷāyatanavibhaṅga","path":"html_text/hi/pli/sutta/mn/mn137.html"},{"ref":"mn138","nikaya":"MN","number":138,"pali":"Uddesavibhaṅga","path":"html_text/hi/pli/sutta/mn/mn138.html"},{"ref":"mn139","nikaya":"MN","number":139,"pali":"Araṇavibhaṅga","path":"html_text/hi/pli/sutta/mn/mn139.html"},{"ref":"mn140","nikaya":"MN","number":140,"pali":"Dhātuvibhaṅga","path":"html_text/hi/pli/sutta/mn/mn140.html"},{"ref":"mn141","nikaya":"MN","number":141,"pali":"Saccavibhaṅga","path":"html_text/hi/pli/sutta/mn/mn141.html"},{"ref":"mn142","nikaya":"MN","number":142,"pali":"Dakkhiṇāvibhaṅga","path":"html_text/hi/pli/sutta/mn/mn142.html"},{"ref":"mn143","nikaya":"MN","number":143,"pali":"Anāthapiṇḍikovāda","path":"html_text/hi/pli/sutta/mn/mn143.html"},{"ref":"mn144","nikaya":"MN","number":144,"pali":"Channovāda","path":"html_text/hi/pli/sutta/mn/mn144.html"},{"ref":"mn145","nikaya":"MN","number":145,"pali":"Puṇṇovāda","path":"html_text/hi/pli/sutta/mn/mn145.html"},{"ref":"mn146","nikaya":"MN","number":146,"pali":"Nandakovāda","path":"html_text/hi/pli/sutta/mn/mn146.html"},{"ref":"mn147","nikaya":"MN","number":147,"pali":"Cūḷarāhulovāda","path":"html_text/hi/pli/sutta/mn/mn147.html"},{"ref":"mn148","nikaya":"MN","number":148,"pali":"Chachakka","path":"html_text/hi/pli/sutta/mn/mn148.html"},{"ref":"mn149","nikaya":"MN","number":149,"pali":"Mahāsaḷāyatanika","path":"html_text/hi/pli/sutta/mn/mn149.html"},{"ref":"mn150","nikaya":"MN","number":150,"pali":"Nagaravindeyya","path":"html_text/hi/pli/sutta/mn/mn150.html"},{"ref":"mn151","nikaya":"MN","number":151,"pali":"Piṇḍapātapārisuddhi","path":"html_text/hi/pli/sutta/mn/mn151.html"},{"ref":"mn152","nikaya":"MN","number":152,"pali":"Indriyabhāvanā","path":"html_text/hi/pli/sutta/mn/mn152.html"}];
+const FANDOM="https://tipitaka.fandom.com";
+const API=FANDOM+"/api.php";
+const RAW_SC="https://raw.githubusercontent.com/suttacentral/sc-data/master/";
+const SC="https://suttacentral.net/";
+const DB_NAME="tipitaka-hindi-vri-publication-style-v4";
+let translator=null, translatorPromise=null, allTitles=null, classicMode="DN", bulkStop=false;
+
+const VRI_STYLE_VERSION="VRI-HI-2026.08";
+
+/*
+  VRI publication-style terminology layer.
+  This is a style/terminology alignment, not a claim that VRI has certified
+  or approved this particular website translation.
+*/
+const VRI_EN_TERMS=[
+ ["the noble eightfold path","आर्य अष्टांगिक मार्ग"],
+ ["noble eightfold path","आर्य अष्टांगिक मार्ग"],
+ ["the four noble truths","चार आर्य सत्य"],
+ ["four noble truths","चार आर्य सत्य"],
+ ["dependent origination","प्रतीत्य-समुत्पाद"],
+ ["dependent arising","प्रतीत्य-समुत्पाद"],
+ ["right mindfulness","सम्यक स्मृति (सति)"],
+ ["right concentration","सम्यक समाधि"],
+ ["right livelihood","सम्यक आजीविका"],
+ ["right intention","सम्यक संकल्प"],
+ ["right thought","सम्यक संकल्प"],
+ ["right effort","सम्यक प्रयास"],
+ ["right action","सम्यक कर्म"],
+ ["right speech","सम्यक वाणी"],
+ ["right view","सम्यक दृष्टि"],
+ ["clear comprehension","सम्पजञ्ञ (सम्प्रजन्य)"],
+ ["sense restraint","इंद्रिय-संवर"],
+ ["five hindrances","पाँच नीवरण"],
+ ["five aggregates","पाँच स्कन्ध"],
+ ["name-and-form","नाम-रूप"],
+ ["six sense bases","षडायतन"],
+ ["volitional formations","संस्कार"],
+ ["mental formations","संस्कार"],
+ ["conditioned formations","संस्कार"],
+ ["loving-kindness","मैत्री (मेत्ता)"],
+ ["sympathetic joy","मुदिता"],
+ ["equanimity","समता"],
+ ["impermanence","अनिच्च (अनित्यता)"],
+ ["non-self","अनत्त (निर-अहंभाव)"],
+ ["not-self","अनत्त (निर-अहंभाव)"],
+ ["mindfulness","सति (स्मृति-जागरूकता)"],
+ ["sensation","वेदना (संवेदना)"],
+ ["sensations","वेदनाएँ (संवेदनाएँ)"],
+ ["craving","तृष्णा"],
+ ["aversion","द्वेष"],
+ ["clinging","उपादान"],
+ ["cessation","निरोध"],
+ ["ignorance","अविद्या"],
+ ["consciousness","विज्ञान (चेतना)"],
+ ["becoming","भव"],
+ ["contact","स्पर्श"],
+ ["dhamma","धम्म"],
+ ["dharma","धर्म"],
+ ["vipassana","विपश्यना"],
+ ["vipassanā","विपश्यना"],
+ ["tipitaka","तिपिटक"],
+ ["tipiṭaka","तिपिटक"],
+ ["pali","पालि"],
+ ["pāli","पालि"],
+ ["pāḷi","पालि"],
+ ["vinaya pitaka","विनय पिटक"],
+ ["vinaya piṭaka","विनय पिटक"],
+ ["sutta pitaka","सुत्तपिटक"],
+ ["sutta piṭaka","सुत्तपिटक"],
+ ["abhidhamma pitaka","अभिधम्म पिटक"],
+ ["abhidhamma piṭaka","अभिधम्म पिटक"],
+ ["digha nikaya","दीघ निकाय"],
+ ["dīgha nikāya","दीघ निकाय"],
+ ["majjhima nikaya","मज्झिम निकाय"],
+ ["majjhima nikāya","मज्झिम निकाय"],
+ ["samyutta nikaya","संयुत्त निकाय"],
+ ["saṃyutta nikāya","संयुत्त निकाय"],
+ ["anguttara nikaya","अङ्गुत्तर निकाय"],
+ ["aṅguttara nikāya","अङ्गुत्तर निकाय"],
+ ["khuddaka nikaya","खुद्दक निकाय"],
+ ["khuddaka nikāya","खुद्दक निकाय"],
+ ["mahasatipatthana","महासतिपट्ठान"],
+ ["mahāsatipaṭṭhāna","महासतिपट्ठान"],
+ ["satipatthana","सतिपट्ठान"],
+ ["satipaṭṭhāna","सतिपट्ठान"],
+ ["dhammapada","धम्मपद"],
+ ["samma sambuddha","सम्यक सम्बुद्ध"],
+ ["sammā sambuddha","सम्यक सम्बुद्ध"],
+ ["fully enlightened one","सम्यक सम्बुद्ध"],
+ ["tathagata","तथागत"],
+ ["tathāgata","तथागत"],
+ ["arahant","अर्हत"],
+ ["arahat","अर्हत"],
+ ["bhikkhuni","भिक्षुणी"],
+ ["bhikkhunī","भिक्षुणी"],
+ ["bhikkhu","भिक्षु"],
+ ["monk","भिक्षु"],
+ ["nun","भिक्षुणी"],
+ ["nibbana","निर्वाण"],
+ ["nibbāna","निर्वाण"],
+ ["anicca","अनिच्च (अनित्यता)"],
+ ["dukkha","दुःख"],
+ ["anatta","अनत्त (निर-अहंभाव)"],
+ ["anattā","अनत्त (निर-अहंभाव)"],
+ ["sila","शील"],
+ ["sīla","शील"],
+ ["samadhi","समाधि"],
+ ["samādhi","समाधि"],
+ ["panna","प्रज्ञा (पञ्ञा)"],
+ ["paññā","प्रज्ञा (पञ्ञा)"],
+ ["tanha","तृष्णा"],
+ ["taṇhā","तृष्णा"],
+ ["vedana","वेदना (संवेदना)"],
+ ["vedanā","वेदना (संवेदना)"],
+ ["sati","सति"],
+ ["sampajanna","सम्पजञ्ञ"],
+ ["sampajañña","सम्पजञ्ञ"],
+ ["metta","मेत्ता (मैत्री)"],
+ ["mettā","मेत्ता (मैत्री)"],
+ ["karuna","करुणा"],
+ ["karuṇā","करुणा"],
+ ["mudita","मुदिता"],
+ ["muditā","मुदिता"],
+ ["upekkha","उपेक्खा (समता)"],
+ ["upekkhā","उपेक्खा (समता)"]
+].sort((a,b)=>b[0].length-a[0].length);
+
+function rxEscape(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}
+const VRI_TERM_LOOKUP=new Map(VRI_EN_TERMS.map(([en,hi])=>[en.toLocaleLowerCase("en"),hi]));
+const VRI_TERM_RX=new RegExp(VRI_EN_TERMS.map(x=>rxEscape(x[0])).join("|"),"giu");
+
+function protectVriTerms(source){
+ const stash=[];let n=0;
+ const protectedText=source.replace(VRI_TERM_RX,m=>{
+   const hi=VRI_TERM_LOOKUP.get(m.toLocaleLowerCase("en"))||m;
+   const token="ZXVRI"+String(n++).padStart(4,"0")+"XZ";
+   stash.push([token,hi]);
+   return token;
+ });
+ return {protectedText,stash};
+}
+
+function normalizeVriHindi(text){
+ if(!text)return text;
+ let t=text;
+ const rules=[
+  [/त्रिपिटक/g,"तिपिटक"],
+  [/टिपिटक/g,"तिपिटक"],
+  [/पाली/g,"पालि"],
+  [/दीर्घ निकाय/g,"दीघ निकाय"],
+  [/मध्य(?:म)? निकाय/g,"मज्झिम निकाय"],
+  [/संयुक्त निकाय/g,"संयुत्त निकाय"],
+  [/अंगुत्तर निकाय/g,"अङ्गुत्तर निकाय"],
+  [/अङ्गुत्तर निकाय/g,"अङ्गुत्तर निकाय"],
+  [/खुद्दक निकाया/g,"खुद्दक निकाय"],
+  [/सूत्त/g,"सुत्त"],
+  [/\bसूत्र\b/g,"सुत्त"],
+  [/सुत्त पिटक/g,"सुत्तपिटक"],
+  [/सुत्त-पिटक/g,"सुत्तपिटक"],
+  [/विनय-पिटक/g,"विनय पिटक"],
+  [/अभिधम्म-पिटक/g,"अभिधम्म पिटक"],
+  [/सम्यक् सम्बुद्ध/g,"सम्यक सम्बुद्ध"],
+  [/सम्यक् संबुद्ध/g,"सम्यक सम्बुद्ध"],
+  [/सम्यक संबुद्ध/g,"सम्यक सम्बुद्ध"],
+  [/भगवान्/g,"भगवान"],
+  [/अर्हन्त/g,"अर्हत"],
+  [/अरहंत/g,"अर्हत"],
+  [/अरहन्त/g,"अर्हत"],
+  [/भिक्खुनी/g,"भिक्षुणी"],
+  [/भिक्खुणी/g,"भिक्षुणी"],
+  [/भिक्खु/g,"भिक्षु"],
+  [/भिक्षू/g,"भिक्षु"],
+  [/निर्वाना/g,"निर्वाण"],
+  [/निब्बान/g,"निर्वाण"],
+  [/अनित्यता \(अनिच्च\)/g,"अनिच्च (अनित्यता)"],
+  [/अनित्यत्व/g,"अनिच्च (अनित्यता)"],
+  [/अस्थायित्व/g,"अनिच्च (अनित्यता)"],
+  [/गैर[- ]?स्व/g,"अनत्त (निर-अहंभाव)"],
+  [/अनात्मा/g,"अनत्त (निर-अहंभाव)"],
+  [/लालसा/g,"तृष्णा"],
+  [/समभाव/g,"समता"],
+  [/सचेतनता/g,"सति (स्मृति-जागरूकता)"],
+  [/माइंडफुलनेस/g,"सति (स्मृति-जागरूकता)"],
+  [/स्पष्ट समझ/g,"सम्पजञ्ञ (सम्प्रजन्य)"],
+  [/अंतर्दृष्टि ध्यान/g,"विपश्यना-साधना"],
+  [/अन्तर्दृष्टि ध्यान/g,"विपश्यना-साधना"],
+  [/चार महान सत्य/g,"चार आर्य सत्य"],
+  [/महान अष्टांगिक मार्ग/g,"आर्य अष्टांगिक मार्ग"],
+  [/आश्रित उत्पत्ति/g,"प्रतीत्य-समुत्पाद"],
+  [/निर्भर उत्पत्ति/g,"प्रतीत्य-समुत्पाद"],
+  [/नाम और रूप/g,"नाम-रूप"],
+  [/छह इंद्रिय आधार/g,"षडायतन"],
+  [/पाँच बाधाएँ/g,"पाँच नीवरण"]
+ ];
+ for(const [rx,to] of rules)t=t.replace(rx,to);
+
+ // VRI-style Hindi punctuation for strongly Devanagari prose, without touching URLs/decimals.
+ const letters=[...t].filter(c=>/\p{L}/u.test(c)).length;
+ const dev=[...t].filter(c=>c>="\u0900"&&c<="\u097F").length;
+ if(letters>8 && dev/letters>.72 && !/https?:\/\//i.test(t)){
+   t=t.replace(/\s+\./g,"।").replace(/\. (?=[\u0900-\u097F])/g,"। ");
+ }
+ return t;
+}
+
+function normalizeVriDOM(root){
+ const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+ for(const n of nodes){
+   if(n.parentElement?.closest("script,style,code,pre,textarea"))continue;
+   n.nodeValue=normalizeVriHindi(n.nodeValue);
+ }
+ return root;
+}
+
+const $=id=>document.getElementById(id);
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]))}
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$(id).classList.add("on");window.scrollTo({top:0,behavior:"instant"})}
+function setHash(obj){history.pushState(obj,"","#"+encodeURIComponent(JSON.stringify(obj)))}
+function parseHash(){try{return JSON.parse(decodeURIComponent(location.hash.slice(1)))}catch{return null}}
+function devRatio(s){let letters=0,dev=0;for(const c of s){if(/\p{L}/u.test(c)){letters++;if(c>="\u0900"&&c<="\u097F")dev++}}return letters?dev/letters:0}
+function isSkipText(s,parent){
+ const t=s.trim(); if(!t)return true;
+ if(parent && parent.closest("script,style,noscript,code,textarea,input,select,option"))return true;
+ if(/^https?:\/\/\S+$/i.test(t))return true;
+ if(!/\p{L}/u.test(t))return true;
+ if(devRatio(t)>.55)return true;
+ return false;
+}
+function isLikelyPaliPage(title){
+ return /pali|pāḷi|pali-deva|devanagri version|roman version/i.test(title||"");
+}
+function splitLong(s,max=2200){
+ if(s.length<=max)return [s];
+ const pieces=s.split(/(?<=[.!?।])\s+/),out=[];let cur="";
+ for(const p of pieces){if(cur && cur.length+p.length+1>max){out.push(cur);cur=p}else cur+=(cur?" ":"")+p}
+ if(cur)out.push(cur);return out;
+}
+
+function openDB(){
+ return new Promise((resolve,reject)=>{
+  const r=indexedDB.open(DB_NAME,1);
+  r.onupgradeneeded=()=>{
+   const db=r.result;
+   if(!db.objectStoreNames.contains("pages"))db.createObjectStore("pages",{keyPath:"title"});
+   if(!db.objectStoreNames.contains("segments"))db.createObjectStore("segments",{keyPath:"source"});
+   if(!db.objectStoreNames.contains("classic"))db.createObjectStore("classic",{keyPath:"ref"});
+   if(!db.objectStoreNames.contains("meta"))db.createObjectStore("meta",{keyPath:"key"});
+  };
+  r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
+ });
+}
+async function dbGet(store,key){try{const db=await openDB();return await new Promise((res,rej)=>{const tx=db.transaction(store,"readonly"),r=tx.objectStore(store).get(key);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error)})}catch{return null}}
+async function dbPut(store,obj){try{const db=await openDB();return await new Promise((res,rej)=>{const tx=db.transaction(store,"readwrite");tx.objectStore(store).put(obj);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}catch{}}
+async function dbCount(store){try{const db=await openDB();return await new Promise((res,rej)=>{const tx=db.transaction(store,"readonly"),r=tx.objectStore(store).count();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}catch{return 0}}
+
+async function fandom(params){
+ const u=new URL(API);
+ const p={format:"json",origin:"*",...params};
+ Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
+ const r=await fetch(u.toString(),{mode:"cors",credentials:"omit"});
+ if(!r.ok)throw new Error("Fandom API HTTP "+r.status);
+ const j=await r.json(); if(j.error)throw new Error(j.error.info||"Fandom API error");return j;
+}
+
+async function ensureTranslator(){
+ if(translator)return translator;
+ if(translatorPromise)return translatorPromise;
+ translatorPromise=(async()=>{
+  const st=$("translatorStatus"),bar=$("modelBar");
+  if(!("Translator" in self)){
+   throw new Error("इस browser में Translator API उपलब्ध नहीं है। Desktop Edge 148+ या Chrome 138+ उपयोग करें और GitHub Pages (HTTPS) पर खोलें।");
+  }
+  const opts={sourceLanguage:"en",targetLanguage:"hi"};
+  const availability=await Translator.availability(opts);
+  st.textContent="Translator स्थिति: "+availability;
+  if(availability==="unavailable")throw new Error("English→Hindi on-device model इस browser में उपलब्ध नहीं है।");
+  translator=await Translator.create({
+   ...opts,
+   monitor(m){m.addEventListener("downloadprogress",e=>{
+    const val=(e.total?e.loaded/e.total:e.loaded)*100;
+    if(Number.isFinite(val))bar.style.width=Math.max(0,Math.min(100,val))+"%";
+    st.textContent="हिंदी भाषा मॉडल डाउनलोड/तैयार हो रहा है… "+(Number.isFinite(val)?Math.round(val)+"%":"");
+   })}
+  });
+  bar.style.width="100%";st.innerHTML='<span class="ok">✓ पूर्ण-पृष्ठ English→Hindi translator + VRI शैली-परत तैयार है।</span>';
+  return translator;
+ })();
+ try{return await translatorPromise}catch(e){translatorPromise=null;$("translatorStatus").innerHTML='<span class="bad">✗ '+esc(e.message)+'</span>';throw e}
+}
+$("enableTranslatorBtn").onclick=async()=>{try{await ensureTranslator()}catch(e){}};
+
+async function translateText(source){
+ if(!source.trim())return source;
+ const cacheKey=VRI_STYLE_VERSION+"::"+source;
+ const cached=await dbGet("segments",cacheKey);
+ if(cached&&cached.hi)return normalizeVriHindi(cached.hi);
+
+ const tr=await ensureTranslator(), parts=splitLong(source),out=[];
+ for(const p of parts){
+   const {protectedText,stash}=protectVriTerms(p);
+   let hi=await tr.translate(protectedText);
+   for(const [token,value] of stash){
+     hi=hi.split(token).join(value);
+     // Defensive restoration in case the browser inserts spaces around token components.
+     const loose=new RegExp(token.split("").map(rxEscape).join("\\s*"),"g");
+     hi=hi.replace(loose,value);
+   }
+   out.push(normalizeVriHindi(hi));
+ }
+ const hi=normalizeVriHindi(out.join(" "));
+ await dbPut("segments",{source:cacheKey,original:source,hi,style:VRI_STYLE_VERSION});
+ return hi;
+}
+async function translateDOM(root,pageTitle){
+ const nodes=[];
+ const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ while(w.nextNode()){const n=w.currentNode;if(!isSkipText(n.nodeValue,n.parentElement))nodes.push(n)}
+ if(isLikelyPaliPage(pageTitle))return {done:0,total:0,pali:true};
+ let done=0; $("pageBar").style.width="0%";
+ for(const n of nodes){
+  const raw=n.nodeValue,lead=raw.match(/^\s*/)?.[0]||"",trail=raw.match(/\s*$/)?.[0]||"",core=raw.trim();
+  try{n.nodeValue=lead+(await translateText(core))+trail}catch(e){console.warn("segment",e)}
+  done++; if(done%2===0||done===nodes.length)$("pageBar").style.width=(done/Math.max(1,nodes.length)*100)+"%";
+ }
+ return {done,total:nodes.length,pali:false};
+}
+
+function wikiTitleFromHref(href){
+ try{
+  const u=new URL(href,FANDOM);
+  if(u.hostname!=="tipitaka.fandom.com")return null;
+  const m=u.pathname.match(/^\/wiki\/(.+)$/);if(!m)return null;
+  return decodeURIComponent(m[1]).replaceAll("_"," ");
+ }catch{return null}
+}
+function cleanWikiHTML(raw){
+ const doc=new DOMParser().parseFromString(raw,"text/html");
+ const root=doc.querySelector(".mw-parser-output")||doc.body;
+ root.querySelectorAll("script,style,noscript,iframe,form,.mw-editsection,.noprint,.mw-empty-elt").forEach(x=>x.remove());
+ root.querySelectorAll("*").forEach(el=>{
+  [...el.attributes].forEach(a=>{
+   const k=a.name.toLowerCase();
+   if(k.startsWith("on")||["srcset","data-src","data-image-key","data-image-name"].includes(k))el.removeAttribute(a.name);
+  });
+ });
+ root.querySelectorAll("img").forEach(img=>{
+  const s=img.getAttribute("src"); if(s)try{img.src=new URL(s,FANDOM).href}catch{}
+  img.loading="lazy";
+ });
+ root.querySelectorAll("a[href]").forEach(a=>{
+  const h=a.getAttribute("href");
+  if(h&&h.startsWith("#"))return;
+  const wt=wikiTitleFromHref(h);
+  if(wt){a.href="#";a.dataset.wikiTitle=wt}
+  else{
+   try{a.href=new URL(h,FANDOM).href;a.target="_blank";a.rel="noopener"}catch{}
+  }
+ });
+ return root;
+}
+
+async function fetchWikiPage(title){
+ const j=await fandom({action:"parse",page:title,prop:"text|displaytitle",redirects:"1",disableeditsection:"1"});
+ return {canonical:j.parse.title||title,display:j.parse.displaytitle||j.parse.title||title,html:j.parse.text["*"]};
+}
+function attachWikiLinks(host){
+ host.querySelectorAll("a[data-wiki-title]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();openWiki(a.dataset.wikiTitle,true)}));
+}
+
+async function openWiki(title,push=true){
+ show("wikiReaderView");
+ $("wikiTitle").textContent=title;$("wikiCrumb").textContent=title;
+ $("wikiStatus").className="pill wait";$("wikiStatus").textContent="वास्तविक स्रोत पृष्ठ लोड हो रहा है…";
+ $("wikiStats").style.display="none";$("pageBar").style.width="0%";
+ $("wikiSourceLink").href=FANDOM+"/wiki/"+encodeURIComponent(title.replaceAll(" ","_"));
+ $("wikiHost").innerHTML='<div class="loading"><div class="spin"></div>पूरा पृष्ठ प्राप्त और हिंदी में तैयार किया जा रहा है…</div>';
+ if(push)setHash({type:"wiki",title});
+ const cached=await dbGet("pages",title);
+ if(cached&&cached.html){
+  $("wikiTitle").innerHTML=cached.display||esc(title);$("wikiHost").innerHTML=cached.html;attachWikiLinks($("wikiHost"));
+  $("wikiStatus").className="pill";$("wikiStatus").textContent=cached.pali?"✓ मूल पालि पाठ सुरक्षित":"✓ पूर्ण हिंदी पृष्ठ — cache से";
+  $("wikiStats").style.display="inline-block";$("wikiStats").textContent=`${cached.chars.toLocaleString("hi-IN")} अक्षर`;
+  $("pageBar").style.width="100%";document.title=$("wikiHost").textContent.slice(0,60)+" | Tipitaka in Hindi";return;
+ }
+ try{
+  const src=await fetchWikiPage(title), root=cleanWikiHTML(src.html);
+  $("wikiStatus").textContent=isLikelyPaliPage(src.canonical)?"मूल पालि पृष्ठ सुरक्षित किया जा रहा है…":"पूरा पृष्ठ VRI-शैली हिंदी में अनूदित हो रहा है…";
+  let translated={pali:true,done:0,total:0};
+  if(!isLikelyPaliPage(src.canonical)){
+    await ensureTranslator();
+    translated=await translateDOM(root,src.canonical);
+  } else $("pageBar").style.width="100%";
+  normalizeVriDOM(root);
+  const foot=document.createElement("div");foot.className="source-foot";
+  foot.innerHTML=`<strong>मूल स्रोत / Attribution:</strong> <a target="_blank" rel="noopener" href="${FANDOM}/wiki/${encodeURIComponent(src.canonical.replaceAll(" ","_"))}">${esc(src.canonical)}</a><br>यह पृष्ठ Wikipitaka स्रोत का VRI-शैली शब्दावली में स्वतंत्र हिंदी रूपांतरण है; यह VRI-प्रमाणित अनुवाद नहीं है। स्रोत पृष्ठ पर लागू CC BY-SA/अन्य सूचना का सम्मान करें। बाहरी/third-party सामग्री की शर्तें अलग हो सकती हैं।`;
+  root.appendChild(foot);
+  const chars=(root.textContent||"").trim().length,html=root.outerHTML;
+  await dbPut("pages",{title,canonical:src.canonical,display:src.display,html,chars,pali:translated.pali,ts:Date.now()});
+  if(src.canonical!==title)await dbPut("pages",{title:src.canonical,canonical:src.canonical,display:src.display,html,chars,pali:translated.pali,ts:Date.now()});
+  $("wikiTitle").innerHTML=src.display;$("wikiHost").innerHTML=html;attachWikiLinks($("wikiHost"));
+  $("wikiStatus").className="pill";$("wikiStatus").textContent=translated.pali?"✓ मूल पालि पाठ — अनावश्यक translation नहीं":"✓ पूर्ण पृष्ठ — VRI-शैली हिंदी";
+  $("wikiStats").style.display="inline-block";$("wikiStats").textContent=`${chars.toLocaleString("hi-IN")} अक्षर • ${translated.total.toLocaleString("hi-IN")} text blocks`;
+  $("pageBar").style.width="100%";document.title=(root.querySelector("h1,h2")?.textContent||src.canonical)+" | Tipitaka in Hindi";
+ }catch(e){
+  $("wikiStatus").className="pill err";$("wikiStatus").textContent="पृष्ठ तैयार नहीं हो सका";
+  $("wikiHost").innerHTML=`<div class="errbox"><strong>अधूरा/नकली पाठ दिखाने के बजाय यह पृष्ठ रोक दिया गया है।</strong><br>${esc(e.message)}<br><br><a class="btn" target="_blank" rel="noopener" href="${$("wikiSourceLink").href}">मूल Wikipitaka पृष्ठ खोलें</a></div>`;
+ }
+}
+
+async function wikiSearch(q){
+ q=q.trim();if(!q)return;
+ $("searchResults").style.display="block";$("searchResults").innerHTML='<div class="loading"><div class="spin"></div>खोज रहा है…</div>';
+ try{
+  const j=await fandom({action:"query",list:"search",srsearch:q,srlimit:"50"});
+  const arr=j.query.search||[];
+  $("searchResults").innerHTML=arr.length?arr.map(x=>`<button class="result" data-title="${esc(x.title)}"><b>${esc(x.title)}</b><br><small>${String(x.snippet||"").replace(/<[^>]*>/g,"")}</small></button>`).join(""):'<div class="notice">कोई पृष्ठ नहीं मिला।</div>';
+  $("searchResults").querySelectorAll("[data-title]").forEach(b=>b.onclick=()=>openWiki(b.dataset.title,true));
+ }catch(e){$("searchResults").innerHTML='<div class="errbox">'+esc(e.message)+'</div>'}
+}
+$("wikiSearchBtn").onclick=()=>wikiSearch($("wikiSearchInput").value);
+$("wikiSearchInput").addEventListener("keydown",e=>{if(e.key==="Enter")wikiSearch(e.target.value)});
+$("searchBtn").onclick=()=>{show("homeView");wikiSearch($("globalSearch").value)};
+$("globalSearch").addEventListener("keydown",e=>{if(e.key==="Enter"){$("searchBtn").click()}});
+$("openMainBtn").onclick=()=>openWiki("Main Page",true);
+
+async function loadAllTitles(force=false){
+ if(allTitles&&!force)return allTitles;
+ const saved=await dbGet("meta","allTitles");
+ if(saved&&Array.isArray(saved.value)&&saved.value.length>1000&&!force){allTitles=saved.value;return allTitles}
+ const out=[];let apcontinue=null;
+ do{
+  const params={action:"query",list:"allpages",aplimit:"max",apnamespace:"0"};
+  if(apcontinue)params.apcontinue=apcontinue;
+  const j=await fandom(params);
+  (j.query.allpages||[]).forEach(x=>out.push(x.title));
+  apcontinue=j.continue?.apcontinue||null;
+  $("allPagesCount").textContent=`शीर्षक लोड: ${out.length.toLocaleString("hi-IN")}…`;
+ }while(apcontinue);
+ allTitles=[...new Set(out)];
+ await dbPut("meta",{key:"allTitles",value:allTitles,ts:Date.now()});return allTitles;
+}
+function renderAllPages(filter=""){
+ const f=filter.trim().toLowerCase(),arr=(allTitles||[]).filter(x=>!f||x.toLowerCase().includes(f));
+ $("allPagesCount").textContent=`${arr.length.toLocaleString("hi-IN")} पृष्ठ दिख रहे हैं${allTitles?` / कुल ${allTitles.length.toLocaleString("hi-IN")}`:""}`;
+ $("allPagesResults").innerHTML=arr.map(t=>`<button class="result" data-title="${esc(t)}">${esc(t)}</button>`).join("");
+ $("allPagesResults").querySelectorAll("[data-title]").forEach(b=>b.onclick=()=>openWiki(b.dataset.title,true));
+}
+$("allPagesBtn").onclick=async()=>{show("allPagesView");$("allPagesResults").innerHTML='<div class="loading"><div class="spin"></div>सभी पृष्ठ शीर्षक लोड हो रहे हैं…</div>';try{await loadAllTitles();renderAllPages()}catch(e){$("allPagesResults").innerHTML='<div class="errbox">'+esc(e.message)+'</div>'}};
+$("allPagesFilter").addEventListener("input",e=>renderAllPages(e.target.value));
+
+function classicItems(){const q=$("classicSearch").value.trim().toLowerCase();return CLASSIC.filter(x=>x.nikaya===classicMode&&(!q||(x.ref+" "+x.pali).toLowerCase().includes(q)))}
+function renderClassic(){
+ const arr=classicItems();$("classicBody").innerHTML='<div class="grid">'+arr.map(x=>`<button class="card" data-ref="${x.ref}"><b>${x.nikaya} ${x.number}</b>${esc(x.pali)}<br><small>पूरा हिंदी पाठ →</small></button>`).join("")+'</div>';
+ $("classicBody").querySelectorAll("[data-ref]").forEach(b=>b.onclick=()=>openClassic(b.dataset.ref,true));
+}
+document.querySelectorAll("[data-classic]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-classic]").forEach(x=>x.classList.remove("active"));b.classList.add("active");classicMode=b.dataset.classic;renderClassic()});
+$("classicSearch").addEventListener("input",renderClassic);
+
+async function classicFetch(x){
+ const classicKey=VRI_STYLE_VERSION+"::"+x.ref; const c=await dbGet("classic",classicKey);if(c)return c;
+ const r=await fetch(RAW_SC+x.path,{cache:"force-cache"});if(!r.ok)throw new Error("Hindi source HTTP "+r.status);
+ const raw=await r.text(),doc=new DOMParser().parseFromString(raw,"text/html"),article=doc.querySelector("article");
+ if(!article)throw new Error("पूर्ण article source नहीं मिला");
+ article.querySelectorAll("script,style").forEach(n=>n.remove());
+ article.querySelectorAll("a[href]").forEach(a=>{try{a.href=new URL(a.getAttribute("href"),SC).href;a.target="_blank";a.rel="noopener"}catch{}});
+ normalizeVriDOM(article);
+ const obj={ref:classicKey,canonicalRef:x.ref,html:article.outerHTML,title:(article.querySelector("h1")?.textContent||x.ref.toUpperCase()).trim(),chars:(article.textContent||"").trim().length,paras:article.querySelectorAll("p").length};
+ await dbPut("classic",obj);return obj;
+}
+async function openClassic(ref,push=true){
+ const x=CLASSIC.find(v=>v.ref===ref);if(!x)return;
+ show("classicReaderView");$("classicCrumb").textContent=(x.nikaya==="DN"?"दीघ निकाय":"मज्झिम निकाय")+" › "+x.nikaya+" "+x.number;
+ $("classicTitle").textContent=x.nikaya+" "+x.number+" — "+x.pali;$("classicStatus").className="pill wait";$("classicStatus").textContent="पूर्ण हिंदी स्रोत-पाठ लोड हो रहा है…";$("classicStats").style.display="none";
+ $("classicHost").innerHTML='<div class="loading"><div class="spin"></div>पूरा पाठ लोड हो रहा है…</div>';$("classicSource").href=SC+x.ref+"/hi/sankrityayan";
+ if(push)setHash({type:"classic",ref});
+ const list=CLASSIC.filter(v=>v.nikaya===x.nikaya),i=list.findIndex(v=>v.ref===ref);
+ $("classicPrev").disabled=i<=0;$("classicNext").disabled=i>=list.length-1;
+ $("classicPrev").onclick=()=>i>0&&openClassic(list[i-1].ref,true);$("classicNext").onclick=()=>i<list.length-1&&openClassic(list[i+1].ref,true);
+ try{const d=await classicFetch(x);$("classicTitle").textContent=d.title;$("classicHost").innerHTML=d.html;$("classicStatus").className="pill";$("classicStatus").textContent="✓ पूर्ण डिजिटल हिंदी पाठ";$("classicStats").style.display="inline-block";$("classicStats").textContent=`${d.paras} अनुच्छेद • ${d.chars.toLocaleString("hi-IN")} अक्षर`;document.title=d.title+" | Tipitaka in Hindi"}
+ catch(e){$("classicStatus").className="pill err";$("classicStatus").textContent="लोड विफल";$("classicHost").innerHTML=`<div class="errbox">अधूरा summary नहीं दिखाया गया। ${esc(e.message)}<br><br><a class="btn" target="_blank" href="${$("classicSource").href}">पूरा स्रोत खोलें</a></div>`}
+}
+
+async function cacheInfo(){
+ const pc=await dbCount("pages"),sc=await dbCount("segments"),cc=await dbCount("classic");
+ $("bulkStatus").textContent=`Cached full Wikipitaka pages: ${pc.toLocaleString("hi-IN")} • translated text segments: ${sc.toLocaleString("hi-IN")} • classical DN/MN texts: ${cc.toLocaleString("hi-IN")}`;
+}
+$("cacheInfoBtn").onclick=cacheInfo;
+
+async function bulkTranslate(){
+ bulkStop=false;$("bulkBtn").disabled=true;$("pauseBtn").disabled=false;
+ try{
+  await ensureTranslator();const titles=await loadAllTitles();let done=0,failed=0;
+  const meta=await dbGet("meta","bulkDone"),completed=new Set(meta?.value||[]);
+  for(let i=0;i<titles.length;i++){
+   if(bulkStop)break;const title=titles[i];
+   if(completed.has(title)){done++;continue}
+   $("bulkStatus").textContent=`${i+1}/${titles.length}: ${title} — पूरा पृष्ठ VRI-शैली में अनूदित/कैश हो रहा है…`;
+   try{
+    const existing=await dbGet("pages",title);
+    if(!existing){
+     const src=await fetchWikiPage(title),root=cleanWikiHTML(src.html);
+     let tr={pali:true,total:0};
+     if(!isLikelyPaliPage(src.canonical))tr=await translateDOM(root,src.canonical);
+     normalizeVriDOM(root);
+     const foot=document.createElement("div");foot.className="source-foot";foot.innerHTML=`<strong>मूल स्रोत / Attribution:</strong> <a target="_blank" rel="noopener" href="${FANDOM}/wiki/${encodeURIComponent(src.canonical.replaceAll(" ","_"))}">${esc(src.canonical)}</a><br>Wikipitaka स्रोत का हिंदी रूपांतरण।`;
+     root.appendChild(foot);const html=root.outerHTML,chars=(root.textContent||"").trim().length;
+     await dbPut("pages",{title,canonical:src.canonical,display:src.display,html,chars,pali:tr.pali,ts:Date.now()});
+    }
+    completed.add(title);done++;
+   }catch(e){failed++;console.warn("bulk",title,e)}
+   if(i%5===0)await dbPut("meta",{key:"bulkDone",value:[...completed],ts:Date.now()});
+   $("bulkBar").style.width=((i+1)/titles.length*100)+"%";
+   $("bulkStatus").textContent=`पूर्ण ${done.toLocaleString("hi-IN")} / ${titles.length.toLocaleString("hi-IN")} • विफल ${failed.toLocaleString("hi-IN")} • वर्तमान: ${title}`;
+   await new Promise(r=>setTimeout(r,80));
+  }
+  await dbPut("meta",{key:"bulkDone",value:[...completed],ts:Date.now()});
+  if(!bulkStop&&completed.size>=titles.length)$("bulkStatus").innerHTML='<span class="ok">✓ उपलब्ध namespace-0 Wikipitaka पृष्ठों का पूर्ण local Hindi cache तैयार है।</span>';
+  else if(bulkStop)$("bulkStatus").textContent+=" • रोका गया; अगली बार यहीं से resume होगा।";
+ }catch(e){$("bulkStatus").innerHTML='<span class="bad">✗ '+esc(e.message)+'</span>'}
+ $("bulkBtn").disabled=false;$("pauseBtn").disabled=true;
+}
+$("bulkBtn").onclick=bulkTranslate;$("pauseBtn").onclick=()=>{bulkStop=true;$("pauseBtn").disabled=true};
+
+function home(push=true){show("homeView");document.title="तिपिटक हिंदी — VRI प्रकाशन-शैली रीडर";if(push)history.pushState({type:"home"},"",location.pathname+location.search)}
+$("homeBtn").onclick=()=>home(true);document.querySelectorAll(".goHome").forEach(a=>a.onclick=e=>{e.preventDefault();home(true)});
+document.querySelectorAll(".goBack").forEach(b=>b.onclick=()=>history.back());
+
+window.addEventListener("popstate",e=>{
+ const s=e.state||parseHash();
+ if(s?.type==="wiki")openWiki(s.title,false);
+ else if(s?.type==="classic")openClassic(s.ref,false);
+ else home(false);
+});
+renderClassic();
+const initial=parseHash();
+if(initial?.type==="wiki")openWiki(initial.title,false);
+else if(initial?.type==="classic")openClassic(initial.ref,false);
+</script>
+</body>
+</html>

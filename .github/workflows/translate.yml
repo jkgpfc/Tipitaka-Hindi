@@ -1,0 +1,66 @@
+name: Cloud translate Wikipitaka
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_size:
+        description: "Pages to translate in this run"
+        required: false
+        default: "10"
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tipitaka-cloud-translation
+  cancel-in-progress: false
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Verify API secret
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::OPENAI_API_KEY secret is missing. Add it at Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Translate next batch
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6-luna' }}
+        run: |
+          BATCH="${{ github.event.inputs.batch_size }}"
+          if [ -z "$BATCH" ]; then BATCH="10"; fi
+          python scripts/translate_site.py --batch-size "$BATCH"
+
+      - name: Commit permanent translated pages
+        run: |
+          git config user.name "tipitaka-translation-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data pages
+          if git diff --cached --quiet; then
+            echo "No new translation changes."
+          else
+            git commit -m "Translate next Wikipitaka batch"
+            git push
+          fi

@@ -63,5 +63,70 @@
     "updated_at": "2026-08-23T17:33:21.384502+00:00",
     "model": "Helsinki-NLP/opus-mt-en-hi",
     "engine": "free-open-source"
+  },
+  "Digha Nikaya": {
+    "title": "Digha Nikaya",
+    "canonical_title": "Digha Nikaya",
+    "display_title": "दिमा निमया",
+    "source_display_title": "Digha Nikaya",
+    "file": "pages/1380.html",
+    "source": "https://tipitaka.fandom.com/wiki/Digha_Nikaya",
+    "translated_blocks": 134,
+    "total_blocks": 134,
+    "updated_at": "2026-08-23T17:52:46.756195+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Majjhima Nikaya": {
+    "title": "Majjhima Nikaya",
+    "canonical_title": "Majjhima Nikaya",
+    "display_title": "माजेहरा निकेया",
+    "source_display_title": "Majjhima Nikaya",
+    "file": "pages/1381.html",
+    "source": "https://tipitaka.fandom.com/wiki/Majjhima_Nikaya",
+    "translated_blocks": 450,
+    "total_blocks": 450,
+    "updated_at": "2026-08-23T17:55:16.945259+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Samyutta Nikaya": {
+    "title": "Samyutta Nikaya",
+    "canonical_title": "Samyutta Nikaya",
+    "display_title": "समुकुटा निकुया",
+    "source_display_title": "Samyutta Nikaya",
+    "file": "pages/1515.html",
+    "source": "https://tipitaka.fandom.com/wiki/Samyutta_Nikaya",
+    "translated_blocks": 158,
+    "total_blocks": 158,
+    "updated_at": "2026-08-23T17:56:35.380634+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Anguttara Nikaya": {
+    "title": "Anguttara Nikaya",
+    "canonical_title": "Anguttara Nikaya",
+    "display_title": "आंद्रा निद्रिया",
+    "source_display_title": "Anguttara Nikaya",
+    "file": "pages/1516.html",
+    "source": "https://tipitaka.fandom.com/wiki/Anguttara_Nikaya",
+    "translated_blocks": 78,
+    "total_blocks": 78,
+    "updated_at": "2026-08-23T17:57:14.584664+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Khuddaka Nikaya": {
+    "title": "Khuddaka Nikaya",
+    "canonical_title": "Khuddaka Nikaya",
+    "display_title": "केएयोत्का निकेया",
+    "source_display_title": "Khuddaka Nikaya",
+    "file": "pages/1504.html",
+    "source": "https://tipitaka.fandom.com/wiki/Khuddaka_Nikaya",
+    "translated_blocks": 96,
+    "total_blocks": 96,
+    "updated_at": "2026-08-23T17:57:48.567566+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
   }
 }

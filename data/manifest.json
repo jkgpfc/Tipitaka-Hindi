@@ -258,5 +258,70 @@
     "updated_at": "2026-08-23T18:54:03.854178+00:00",
     "model": "Helsinki-NLP/opus-mt-en-hi",
     "engine": "free-open-source"
+  },
+  "22.42 Anudhamma Sutta": {
+    "title": "22.42 Anudhamma Sutta",
+    "canonical_title": "22.42 Anudhamma Sutta",
+    "display_title": "22.42 आउममा्ता",
+    "source_display_title": "22.42 Anudhamma Sutta",
+    "file": "pages/2340.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.42_Anudhamma_Sutta",
+    "translated_blocks": 11,
+    "total_blocks": 11,
+    "updated_at": "2026-08-23T19:13:46.516480+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "22.43 Attadipa Sutta": {
+    "title": "22.43 Attadipa Sutta",
+    "canonical_title": "22.43 Attadipa Sutta",
+    "display_title": "2243",
+    "source_display_title": "22.43 Attadipa Sutta",
+    "file": "pages/2382.html",
+    "source": "https://tipitaka.fandom.com/wiki/22.43_Attadipa_Sutta",
+    "translated_blocks": 35,
+    "total_blocks": 35,
+    "updated_at": "2026-08-23T19:13:57.928901+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "27.10 Khandha Sutta": {
+    "title": "27.10 Khandha Sutta",
+    "canonical_title": "27.10 Khandha Sutta",
+    "display_title": "27.10 खान खानडेन्ताता",
+    "source_display_title": "27.10 Khandha Sutta",
+    "file": "pages/2510.html",
+    "source": "https://tipitaka.fandom.com/wiki/27.10_Khandha_Sutta",
+    "translated_blocks": 7,
+    "total_blocks": 7,
+    "updated_at": "2026-08-23T19:14:03.358673+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "AN1.The Book of Ones-ver2": {
+    "title": "AN1.The Book of Ones-ver2",
+    "canonical_title": "AN1.The Book of Ones-ver2",
+    "display_title": "एक सुरक्षित किताब,",
+    "source_display_title": "AN1.The Book of Ones-ver2",
+    "file": "pages/7323.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN1.The_Book_of_Ones-ver2",
+    "translated_blocks": 566,
+    "total_blocks": 566,
+    "updated_at": "2026-08-23T19:20:04.475339+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "AN1.Verse by Verse": {
+    "title": "AN1.Verse by Verse",
+    "canonical_title": "AN1.Verse by Verse",
+    "display_title": "आयतों की जाँच कीजिए",
+    "source_display_title": "AN1.Verse by Verse",
+    "file": "pages/7360.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN1.Verse_by_Verse",
+    "translated_blocks": 512,
+    "total_blocks": 512,
+    "updated_at": "2026-08-23T19:26:39.332084+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
   }
 }

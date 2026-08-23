@@ -128,5 +128,70 @@
     "updated_at": "2026-08-23T17:57:48.567566+00:00",
     "model": "Helsinki-NLP/opus-mt-en-hi",
     "engine": "free-open-source"
+  },
+  "'AN 10.66 Dutiya Sukha Sutta": {
+    "title": "'AN 10.66 Dutiya Sukha Sutta",
+    "canonical_title": "AN 10.66 Dutiya Sukha Sutta",
+    "display_title": "एक 106 दुकुतिया सुगाआ",
+    "source_display_title": "AN 10.66 Dutiya Sukha Sutta",
+    "file": "pages/4086.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN_10.66_Dutiya_Sukha_Sutta",
+    "translated_blocks": 14,
+    "total_blocks": 14,
+    "updated_at": "2026-08-23T18:09:58.054389+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "'SN 36.10 Phassamulaka Sutta": {
+    "title": "'SN 36.10 Phassamulaka Sutta",
+    "canonical_title": "SN 36.10 Phassamulaka Sutta",
+    "display_title": "SN 3610 Parakaakaukraine. kgm",
+    "source_display_title": "SN 36.10 Phassamulaka Sutta",
+    "file": "pages/3733.html",
+    "source": "https://tipitaka.fandom.com/wiki/SN_36.10_Phassamulaka_Sutta",
+    "translated_blocks": 16,
+    "total_blocks": 16,
+    "updated_at": "2026-08-23T18:10:06.998662+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "12.25 Bhumija Sutta": {
+    "title": "12.25 Bhumija Sutta",
+    "canonical_title": "12.25 Bhumija Sutta",
+    "display_title": "12.25 ब्राज़ा सुसाताता",
+    "source_display_title": "12.25 Bhumija Sutta",
+    "file": "pages/2389.html",
+    "source": "https://tipitaka.fandom.com/wiki/12.25_Bhumija_Sutta",
+    "translated_blocks": 21,
+    "total_blocks": 21,
+    "updated_at": "2026-08-23T18:10:26.549793+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "12.44 Loka Sutta": {
+    "title": "12.44 Loka Sutta",
+    "canonical_title": "12.44 Loka Sutta",
+    "display_title": "12.44 लोकाperu. kgm",
+    "source_display_title": "12.44 Loka Sutta",
+    "file": "pages/2392.html",
+    "source": "https://tipitaka.fandom.com/wiki/12.44_Loka_Sutta",
+    "translated_blocks": 15,
+    "total_blocks": 15,
+    "updated_at": "2026-08-23T18:10:39.644785+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "2.3Maha-parinibbana Sutta Pali-Dev.": {
+    "title": "2.3Maha-parinibbana Sutta Pali-Dev.",
+    "canonical_title": "2.3Maha-parinibbana Sutta Pali-Dev.",
+    "display_title": "2.3Maha-parinibbana Sutta Pali-Dev.",
+    "source_display_title": "2.3Maha-parinibbana Sutta Pali-Dev.",
+    "file": "pages/7394.html",
+    "source": "https://tipitaka.fandom.com/wiki/2.3Maha-parinibbana_Sutta_Pali-Dev.",
+    "translated_blocks": 0,
+    "total_blocks": 0,
+    "updated_at": "2026-08-23T18:10:40.199140+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
   }
 }

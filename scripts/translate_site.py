@@ -9,12 +9,12 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable
 from urllib.parse import quote, unquote, urljoin, urlparse
 
 import requests
+import torch
 from bs4 import BeautifulSoup, NavigableString
-from openai import OpenAI
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 BASE = "https://tipitaka.fandom.com"
 API = BASE + "/api.php"
@@ -26,20 +26,28 @@ MANIFEST = DATA / "manifest.json"
 PROGRESS = DATA / "progress.json"
 FAILURES = DATA / "failures.json"
 
-MODEL = os.getenv("OPENAI_MODEL", "gpt-5.6-luna")
-USER_AGENT = "TipitakaHindiCloudTranslator/1.0 (GitHub Pages translation project)"
-MAX_BATCH_CHARS = int(os.getenv("MAX_BATCH_CHARS", "12000"))
+MODEL_NAME = os.getenv("TRANSLATION_MODEL", "Helsinki-NLP/opus-mt-en-hi")
+USER_AGENT = "TipitakaHindiFreeCloudTranslator/2.0"
 REQUEST_DELAY = float(os.getenv("SOURCE_REQUEST_DELAY", "0.15"))
+MAX_SOURCE_WORDS = int(os.getenv("MAX_SOURCE_WORDS", "110"))
+MODEL_BATCH = int(os.getenv("MODEL_BATCH", "8"))
 
 VRI_REPLACEMENTS = [
     (r"त्रिपिटक", "तिपिटक"),
+    (r"टिपिटक", "तिपिटक"),
     (r"पाली", "पालि"),
     (r"दीर्घ निकाय", "दीघ निकाय"),
     (r"मध्य(?:म)? निकाय", "मज्झिम निकाय"),
     (r"संयुक्त निकाय", "संयुत्त निकाय"),
     (r"अंगुत्तर निकाय", "अङ्गुत्तर निकाय"),
     (r"\bसूत्र\b", "सुत्त"),
+    (r"सूत्त", "सुत्त"),
+    (r"सुत्त पिटक", "सुत्तपिटक"),
     (r"निब्बान", "निर्वाण"),
+    (r"निर्वाना", "निर्वाण"),
+    (r"अरहन्त", "अर्हत"),
+    (r"अरहंत", "अर्हत"),
+    (r"भिक्खु", "भिक्षु"),
     (r"समभाव", "समता"),
     (r"अस्थायित्व", "अनिच्च (अनित्यता)"),
     (r"अनित्यता \(अनिच्च\)", "अनिच्च (अनित्यता)"),
@@ -47,52 +55,29 @@ VRI_REPLACEMENTS = [
     (r"लालसा", "तृष्णा"),
 ]
 
-SYSTEM = """You are translating Theravada Buddhist canonical and study material from English into Hindi.
-
-Translate EVERY supplied segment fully. Do not summarize, shorten, omit, add commentary, or combine segments.
-Use sober Hindi in the publication style associated with Vipassana Research Institute terminology, while making no claim of VRI endorsement.
-
-Mandatory terminology preferences:
-Tipitaka/Tipiṭaka = तिपिटक
-Pali/Pāḷi = पालि
-Dhamma = धम्म
-Sutta = सुत्त
-Vinaya Piṭaka = विनय पिटक
-Sutta Piṭaka = सुत्तपिटक
-Abhidhamma Piṭaka = अभिधम्म पिटक
-Dīgha Nikāya = दीघ निकाय
-Majjhima Nikāya = मज्झिम निकाय
-Saṃyutta Nikāya = संयुत्त निकाय
-Aṅguttara Nikāya = अङ्गुत्तर निकाय
-Khuddaka Nikāya = खुद्दक निकाय
-sīla = शील
-samādhi = समाधि
-paññā = प्रज्ञा (पञ्ञा)
-anicca = अनिच्च (अनित्यता)
-dukkha = दुःख
-anattā = अनत्त
-taṇhā = तृष्णा
-vedanā = वेदना (संवेदना)
-upekkhā = उपेक्खा (समता)
-sati = सति
-sampajañña = सम्पजञ्ञ
-paṭiccasamuppāda = प्रतीत्य-समुत्पाद
-Nibbāna = निर्वाण
-bhikkhu = भिक्षु
-arahant = अर्हत
-Sammā Sambuddha = सम्यक सम्बुद्ध
-
-Preserve Pali proper names and canonical identifiers such as DN, MN, SN, AN, KN.
-Do not translate URLs, reference codes, or strings that are already predominantly Devanagari.
-Return ONLY valid JSON in exactly this shape:
-{"items":[{"id":0,"hi":"..."},{"id":1,"hi":"..."}]}
-The id values and count must exactly match the input.
-"""
+PALI_MARKERS = {
+    "bhikkhave", "bhagavā", "evaṃ", "suttaṃ", "dhammaṃ", "saṅghaṃ",
+    "tathāgato", "arahaṃ", "sammāsambuddho", "dukkhaṃ", "aniccaṃ",
+    "anattā", "vedanā", "taṇhā", "nibbānaṃ",
+}
 
 REMOVE_SELECTORS = [
     "script", "style", "noscript", "iframe", "form",
     ".mw-editsection", ".noprint", ".mw-empty-elt",
     ".reference-backlink"
+]
+
+PRIORITY_TITLES = [
+    "Main Page",
+    "Tipitaka",
+    "Vinaya Pitaka",
+    "Sutta Pitaka",
+    "Abhidhamma Pitaka",
+    "Digha Nikaya",
+    "Majjhima Nikaya",
+    "Samyutta Nikaya",
+    "Anguttara Nikaya",
+    "Khuddaka Nikaya",
 ]
 
 def load_json(path: Path, default):
@@ -123,7 +108,16 @@ def dev_ratio(text: str) -> float:
     dev = sum("\u0900" <= ch <= "\u097F" for ch in text)
     return dev / letters
 
-def should_translate(text: str, parent_name: str | None) -> bool:
+def looks_pali(text: str) -> bool:
+    t = text.strip().lower()
+    if len(t) < 60:
+        return False
+    words = set(re.findall(r"[\wāīūṃṅñṭḍṇḷṛ]+", t, flags=re.UNICODE))
+    marker_hits = len(words & PALI_MARKERS)
+    diacritics = sum(t.count(ch) for ch in "āīūṃṅñṭḍṇḷ")
+    return marker_hits >= 2 or diacritics >= 6
+
+def should_translate(text: str, parent_name: str | None, page_title: str) -> bool:
     t = text.strip()
     if not t:
         return False
@@ -131,9 +125,13 @@ def should_translate(text: str, parent_name: str | None) -> bool:
         return False
     if not any(ch.isalpha() for ch in t):
         return False
-    if dev_ratio(t) >= 0.65:
+    if dev_ratio(t) >= 0.55:
         return False
     if re.fullmatch(r"https?://\S+", t):
+        return False
+    if re.search(r"pali|pāḷi|devanagri version|roman version", page_title, flags=re.I):
+        return False
+    if looks_pali(t):
         return False
     return True
 
@@ -198,7 +196,69 @@ def clean_html(raw: str) -> BeautifulSoup:
                 del tag.attrs[attr]
     return soup
 
-def extract_nodes(soup: BeautifulSoup):
+class FreeTranslator:
+    def __init__(self):
+        print(f"Loading free translation model: {MODEL_NAME}")
+        torch.set_num_threads(max(1, min(4, os.cpu_count() or 2)))
+        self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+        self.model.eval()
+
+    def split_text(self, text: str) -> list[str]:
+        text = re.sub(r"\s+", " ", text.strip())
+        if not text:
+            return []
+        sentences = re.split(r"(?<=[.!?।])\s+", text)
+        out, current, words = [], [], 0
+        for sentence in sentences:
+            sw = sentence.split()
+            if len(sw) > MAX_SOURCE_WORDS:
+                if current:
+                    out.append(" ".join(current))
+                    current, words = [], 0
+                for i in range(0, len(sw), MAX_SOURCE_WORDS):
+                    out.append(" ".join(sw[i:i + MAX_SOURCE_WORDS]))
+                continue
+            if current and words + len(sw) > MAX_SOURCE_WORDS:
+                out.append(" ".join(current))
+                current, words = [], 0
+            current.append(sentence)
+            words += len(sw)
+        if current:
+            out.append(" ".join(current))
+        return out
+
+    def translate_chunks(self, chunks: list[str]) -> list[str]:
+        results = []
+        for start in range(0, len(chunks), MODEL_BATCH):
+            batch = chunks[start:start + MODEL_BATCH]
+            enc = self.tokenizer(
+                batch,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=512,
+            )
+            with torch.inference_mode():
+                generated = self.model.generate(
+                    **enc,
+                    max_new_tokens=512,
+                    num_beams=1,
+                    do_sample=False,
+                )
+            results.extend(
+                normalize_hi(x)
+                for x in self.tokenizer.batch_decode(generated, skip_special_tokens=True)
+            )
+        return results
+
+    def translate_text(self, text: str) -> str:
+        chunks = self.split_text(text)
+        if not chunks:
+            return text
+        return " ".join(self.translate_chunks(chunks))
+
+def extract_nodes(soup: BeautifulSoup, page_title: str):
     nodes = []
     for node in soup.find_all(string=True):
         if not isinstance(node, NavigableString):
@@ -206,74 +266,22 @@ def extract_nodes(soup: BeautifulSoup):
         parent = node.parent
         if parent is None:
             continue
-        if should_translate(str(node), parent.name):
+        if should_translate(str(node), parent.name, page_title):
             nodes.append(node)
     return nodes
 
-def make_batches(nodes) -> Iterable[list[tuple[int, str]]]:
-    batch = []
-    chars = 0
-    for idx, node in enumerate(nodes):
-        text = str(node).strip()
-        if not text:
-            continue
-        if batch and chars + len(text) > MAX_BATCH_CHARS:
-            yield batch
-            batch = []
-            chars = 0
-        batch.append((idx, text))
-        chars += len(text)
-    if batch:
-        yield batch
-
-def parse_json_output(raw: str) -> dict:
-    text = raw.strip()
-    if text.startswith("```"):
-        text = re.sub(r"^```(?:json)?\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
-    return json.loads(text)
-
-def translate_one(client: OpenAI, text: str) -> str:
-    response = client.responses.create(
-        model=MODEL,
-        input=SYSTEM + "\n\nINPUT:\n" + json.dumps({"items":[{"id":0,"text":text}]}, ensure_ascii=False),
-    )
-    try:
-        obj = parse_json_output(response.output_text)
-        return normalize_hi(obj["items"][0]["hi"])
-    except Exception:
-        return normalize_hi(response.output_text.strip())
-
-def translate_batch(client: OpenAI, batch: list[tuple[int, str]]) -> dict[int, str]:
-    payload = {"items": [{"id": idx, "text": text} for idx, text in batch]}
-    response = client.responses.create(
-        model=MODEL,
-        input=SYSTEM + "\n\nINPUT:\n" + json.dumps(payload, ensure_ascii=False),
-    )
-    try:
-        obj = parse_json_output(response.output_text)
-        items = obj["items"]
-        mapping = {int(x["id"]): normalize_hi(str(x["hi"])) for x in items}
-        expected = {idx for idx, _ in batch}
-        if set(mapping) != expected:
-            raise ValueError("Returned ids do not match input")
-        return mapping
-    except Exception:
-        return {idx: translate_one(client, text) for idx, text in batch}
-
-def apply_translation(soup: BeautifulSoup, client: OpenAI) -> tuple[int, int]:
-    nodes = extract_nodes(soup)
+def apply_translation(soup: BeautifulSoup, translator: FreeTranslator, page_title: str) -> tuple[int, int]:
+    nodes = extract_nodes(soup, page_title)
     total = len(nodes)
     done = 0
-    for batch in make_batches(nodes):
-        mapping = translate_batch(client, batch)
-        for idx, _ in batch:
-            node = nodes[idx]
-            raw = str(node)
-            lead = raw[:len(raw)-len(raw.lstrip())]
-            trail = raw[len(raw.rstrip()):]
-            node.replace_with(lead + mapping[idx] + trail)
-            done += 1
+    for node in nodes:
+        raw = str(node)
+        core = raw.strip()
+        lead = raw[:len(raw) - len(raw.lstrip())]
+        trail = raw[len(raw.rstrip()):]
+        translated = translator.translate_text(core)
+        node.replace_with(lead + translated + trail)
+        done += 1
     return done, total
 
 def rewrite_links_and_images(soup: BeautifulSoup):
@@ -306,13 +314,13 @@ article table{border-collapse:collapse;max-width:100%;display:block;overflow:aut
 .source{margin-top:36px;padding:15px;background:var(--soft);border-radius:10px;color:var(--muted);font-size:.9rem}.source a{color:#74400e}
 """
 
-def make_page(title: str, display: str, article_html: str, source_url: str, blocks: int) -> str:
+def make_page(source_title: str, hindi_title: str, article_html: str, source_url: str, blocks: int) -> str:
     return f"""<!doctype html>
 <html lang="hi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)} | तिपिटक हिंदी</title>
+<title>{html.escape(hindi_title)} | तिपिटक हिंदी</title>
 <meta name="description" content="Wikipitaka स्रोत का पूर्ण VRI-शैली हिंदी रूपांतरण">
 <style>{PAGE_CSS}</style>
 </head>
@@ -320,53 +328,69 @@ def make_page(title: str, display: str, article_html: str, source_url: str, bloc
 <nav class="top"><a href="../index.html">☸ तिपिटक हिंदी</a><a href="../index.html">मुख्य सूची</a></nav>
 <main>
 <div class="crumb">Wikipitaka → पूर्ण हिंदी पृष्ठ</div>
-<h1 class="title">{display}</h1>
+<h1 class="title">{html.escape(hindi_title)}</h1>
 <article>{article_html}</article>
-<div class="source"><strong>मूल स्रोत:</strong> <a href="{html.escape(source_url)}" target="_blank" rel="noopener">{html.escape(title)}</a><br>
+<div class="source"><strong>मूल स्रोत:</strong> <a href="{html.escape(source_url)}" target="_blank" rel="noopener">{html.escape(source_title)}</a><br>
 यह स्रोत-पृष्ठ का स्वतंत्र पूर्ण हिंदी रूपांतरण है, VRI-शैली शब्दावली के अनुरूप। यह VRI द्वारा प्रमाणित/अधिकृत अनुवाद होने का दावा नहीं करता।<br>
-अनूदित text blocks: {blocks}. स्रोत पृष्ठ पर लागू लाइसेंस/attribution शर्तों का सम्मान किया गया है।</div>
+अनूदित text blocks: {blocks}. अनुवाद मुक्त open-source मॉडल {html.escape(MODEL_NAME)} से GitHub Actions पर किया गया है।</div>
 </main>
 </body>
 </html>"""
 
-def translate_page(session, client, page: dict):
+def translate_page(session: requests.Session, translator: FreeTranslator, page: dict):
     title = page["title"]
     pageid = page.get("pageid") or abs(hash(title))
     canonical, display, raw = fetch_page(session, title)
     soup = clean_html(raw)
-    done, total = apply_translation(soup, client)
+    done, total = apply_translation(soup, translator, canonical)
     rewrite_links_and_images(soup)
+
+    display_text = BeautifulSoup(display, "html.parser").get_text(" ", strip=True)
+    if should_translate(display_text, None, canonical):
+        hindi_title = translator.translate_text(display_text)
+    else:
+        hindi_title = display_text
+    hindi_title = normalize_hi(hindi_title)
+
     source_url = BASE + "/wiki/" + quote(canonical.replace(" ", "_"), safe="():,._-")
     filename = f"{pageid}.html"
-    page_html = make_page(canonical, display, str(soup), source_url, done)
+    page_html = make_page(canonical, hindi_title, str(soup), source_url, done)
     (PAGES / filename).write_text(page_html, encoding="utf-8")
     return {
         "title": title,
         "canonical_title": canonical,
-        "display_title": BeautifulSoup(display, "html.parser").get_text(" ", strip=True),
+        "display_title": hindi_title,
+        "source_display_title": display_text,
         "file": f"pages/{filename}",
         "source": source_url,
         "translated_blocks": done,
         "total_blocks": total,
         "updated_at": utcnow(),
-        "model": MODEL,
+        "model": MODEL_NAME,
+        "engine": "free-open-source",
     }
+
+def priority_key(page: dict, order: dict[str, int], failures: dict) -> tuple:
+    title = page["title"]
+    if title in PRIORITY_TITLES:
+        p = (0, PRIORITY_TITLES.index(title))
+    elif re.search(r"\b(?:DN|MN|SN|AN)\s*\d|Sutta\b|Nikaya\b|Pitaka\b", title, flags=re.I):
+        p = (1, order[title])
+    else:
+        p = (2, order[title])
+    attempts = int(failures.get(title, {}).get("attempts", 0))
+    return (p[0], attempts, p[1])
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--batch-size", type=int, default=int(os.getenv("BATCH_SIZE", "10")))
+    ap.add_argument("--batch-size", type=int, default=int(os.getenv("BATCH_SIZE", "5")))
     args = ap.parse_args()
-
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise SystemExit("OPENAI_API_KEY is missing. Add it as a GitHub Actions repository secret.")
 
     DATA.mkdir(exist_ok=True)
     PAGES.mkdir(exist_ok=True)
 
     session = requests.Session()
     session.headers.update({"User-Agent": USER_AGENT})
-    client = OpenAI(api_key=api_key)
 
     titles = load_json(TITLES, [])
     if not titles:
@@ -380,17 +404,21 @@ def main():
 
     order = {p["title"]: i for i, p in enumerate(titles)}
     candidates = [p for p in titles if p["title"] not in completed]
-    candidates.sort(key=lambda p: (failures.get(p["title"], {}).get("attempts", 0), order[p["title"]]))
+    candidates.sort(key=lambda p: priority_key(p, order, failures))
     selected = candidates[:max(1, args.batch_size)]
 
-    print(f"Total={len(titles)} Completed={len(completed)} Selected={len(selected)} Model={MODEL}")
+    print(f"Total={len(titles)} Completed={len(completed)} Selected={len(selected)} Model={MODEL_NAME}")
+
+    translator = FreeTranslator() if selected else None
+    batch_succeeded = 0
 
     for n, page in enumerate(selected, 1):
         title = page["title"]
         print(f"[{n}/{len(selected)}] {title}")
         try:
-            manifest[title] = translate_page(session, client, page)
+            manifest[title] = translate_page(session, translator, page)
             failures.pop(title, None)
+            batch_succeeded += 1
             save_json(MANIFEST, manifest)
             save_json(FAILURES, failures)
         except Exception as e:
@@ -412,11 +440,17 @@ def main():
         "failed_pending": len([k for k in failures if k not in manifest]),
         "percent": round((completed_count / len(titles) * 100), 3) if titles else 0,
         "updated_at": utcnow(),
-        "model": MODEL,
+        "model": MODEL_NAME,
+        "engine": "free-open-source",
         "batch_size": args.batch_size,
+        "last_batch_selected": len(selected),
+        "last_batch_succeeded": batch_succeeded,
     }
     save_json(PROGRESS, progress)
     print(json.dumps(progress, ensure_ascii=False))
+
+    if selected and batch_succeeded == 0:
+        raise SystemExit("No pages translated successfully in this batch.")
 
 if __name__ == "__main__":
     main()

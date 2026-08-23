@@ -1,11 +1,14 @@
 {
   "status": "running",
   "total": 5550,
-  "completed": 0,
-  "remaining": 5550,
-  "failed_pending": 10,
-  "percent": 0.0,
-  "updated_at": "2026-08-23T17:03:02.479657+00:00",
-  "model": "gpt-5.6-luna",
-  "batch_size": 10
+  "completed": 5,
+  "remaining": 5545,
+  "failed_pending": 0,
+  "percent": 0.09,
+  "updated_at": "2026-08-23T17:33:21.534958+00:00",
+  "model": "Helsinki-NLP/opus-mt-en-hi",
+  "engine": "free-open-source",
+  "batch_size": 5,
+  "last_batch_selected": 5,
+  "last_batch_succeeded": 5
 }

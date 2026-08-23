@@ -1,1 +1,67 @@
-{}
+{
+  "Main Page": {
+    "title": "Main Page",
+    "canonical_title": "Main Page",
+    "display_title": "मुख्य पृष्ठ",
+    "source_display_title": "Main Page",
+    "file": "pages/1371.html",
+    "source": "https://tipitaka.fandom.com/wiki/Main_Page",
+    "translated_blocks": 199,
+    "total_blocks": 199,
+    "updated_at": "2026-08-23T17:30:29.090935+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Tipitaka": {
+    "title": "Tipitaka",
+    "canonical_title": "Tipitaka",
+    "display_title": "हवालेोना",
+    "source_display_title": "Tipitaka",
+    "file": "pages/1376.html",
+    "source": "https://tipitaka.fandom.com/wiki/Tipitaka",
+    "translated_blocks": 85,
+    "total_blocks": 85,
+    "updated_at": "2026-08-23T17:30:40.030529+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Vinaya Pitaka": {
+    "title": "Vinaya Pitaka",
+    "canonical_title": "Vinaya Pitaka",
+    "display_title": "वोनया पिकाकाकाcolombia. kgm",
+    "source_display_title": "Vinaya Pitaka",
+    "file": "pages/1514.html",
+    "source": "https://tipitaka.fandom.com/wiki/Vinaya_Pitaka",
+    "translated_blocks": 756,
+    "total_blocks": 756,
+    "updated_at": "2026-08-23T17:32:52.236928+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Sutta Pitaka": {
+    "title": "Sutta Pitaka",
+    "canonical_title": "Sutta Pitaka",
+    "display_title": "सुतापेता पितकाName",
+    "source_display_title": "Sutta Pitaka",
+    "file": "pages/1378.html",
+    "source": "https://tipitaka.fandom.com/wiki/Sutta_Pitaka",
+    "translated_blocks": 57,
+    "total_blocks": 57,
+    "updated_at": "2026-08-23T17:32:59.228777+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "Abhidhamma Pitaka": {
+    "title": "Abhidhamma Pitaka",
+    "canonical_title": "Abhidhamma Pitaka",
+    "display_title": "अबीदमा पितका",
+    "source_display_title": "Abhidhamma Pitaka",
+    "file": "pages/1517.html",
+    "source": "https://tipitaka.fandom.com/wiki/Abhidhamma_Pitaka",
+    "translated_blocks": 93,
+    "total_blocks": 93,
+    "updated_at": "2026-08-23T17:33:21.384502+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  }
+}

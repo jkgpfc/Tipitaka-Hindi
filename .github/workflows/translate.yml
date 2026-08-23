@@ -1,4 +1,4 @@
-name: Cloud translate Wikipitaka
+name: Cloud translate Wikipitaka (Free)
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       batch_size:
         description: "Pages to translate in this run"
         required: false
-        default: "10"
+        default: "5"
   schedule:
     - cron: "7,22,37,52 * * * *"
 
@@ -32,25 +32,25 @@ jobs:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Cache Hugging Face model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-opus-mt-en-hi-v1
 
-      - name: Verify API secret exists
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - name: Install CPU translation engine
         run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "::error::OPENAI_API_KEY secret is missing. Add it at Settings > Secrets and variables > Actions."
-            exit 1
-          fi
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -r requirements.txt
 
-      - name: Translate next batch
+      - name: Translate next batch with free open-source model
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6-luna' }}
+          TRANSLATION_MODEL: Helsinki-NLP/opus-mt-en-hi
+          TOKENIZERS_PARALLELISM: "false"
         run: |
           BATCH="${{ github.event.inputs.batch_size }}"
-          if [ -z "$BATCH" ]; then BATCH="10"; fi
+          if [ -z "$BATCH" ]; then BATCH="5"; fi
           python scripts/translate_site.py --batch-size "$BATCH"
 
       - name: Verify translations actually succeeded
@@ -63,8 +63,8 @@ jobs:
               sys.exit(1)
           d = json.loads(p.read_text(encoding='utf-8'))
           print('Translation progress:', d)
-          if d.get('completed', 0) == 0 and d.get('failed_pending', 0) > 0:
-              print('::error::The workflow ran, but zero pages translated successfully. Check OPENAI_API_KEY/model/API billing.')
+          if d.get('last_batch_selected', 0) > 0 and d.get('last_batch_succeeded', 0) == 0:
+              print('::error::No pages translated successfully in this batch.')
               sys.exit(1)
           PY
 
@@ -76,6 +76,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No new translation changes."
           else
-            git commit -m "Translate next Wikipitaka batch"
+            git commit -m "Translate next Wikipitaka batch (free model)"
             git push
           fi

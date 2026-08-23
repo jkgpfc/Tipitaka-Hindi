@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Verify API secret
+      - name: Verify API secret exists
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -52,6 +52,21 @@ jobs:
           BATCH="${{ github.event.inputs.batch_size }}"
           if [ -z "$BATCH" ]; then BATCH="10"; fi
           python scripts/translate_site.py --batch-size "$BATCH"
+
+      - name: Verify translations actually succeeded
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          p = pathlib.Path('data/progress.json')
+          if not p.exists():
+              print('::error::No progress.json was produced.')
+              sys.exit(1)
+          d = json.loads(p.read_text(encoding='utf-8'))
+          print('Translation progress:', d)
+          if d.get('completed', 0) == 0 and d.get('failed_pending', 0) > 0:
+              print('::error::The workflow ran, but zero pages translated successfully. Check OPENAI_API_KEY/model/API billing.')
+              sys.exit(1)
+          PY
 
       - name: Commit permanent translated pages
         run: |

@@ -1,0 +1,11 @@
+{
+  "status": "awaiting_first_cloud_run",
+  "total": 0,
+  "completed": 0,
+  "remaining": 0,
+  "failed_pending": 0,
+  "percent": 0,
+  "updated_at": null,
+  "model": "gpt-5.6-luna",
+  "batch_size": 10
+}

@@ -323,5 +323,70 @@
     "updated_at": "2026-08-23T19:26:39.332084+00:00",
     "model": "Helsinki-NLP/opus-mt-en-hi",
     "engine": "free-open-source"
+  },
+  "AN10.The Book of Tens-ver2": {
+    "title": "AN10.The Book of Tens-ver2",
+    "canonical_title": "AN10.The Book of Tens-ver2",
+    "display_title": "1010.यह किताब है 102",
+    "source_display_title": "AN10.The Book of Tens-ver2",
+    "file": "pages/7334.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN10.The_Book_of_Tens-ver2",
+    "translated_blocks": 2029,
+    "total_blocks": 2029,
+    "updated_at": "2026-08-24T00:48:23.778858+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "AN10 Section(10)5 Pali-Devanagri": {
+    "title": "AN10 Section(10)5 Pali-Devanagri",
+    "canonical_title": "AN10 Section(10)5 Pali-Devanagri",
+    "display_title": "AN10 Section(10)5 Pali-Devanagri",
+    "source_display_title": "AN10 Section(10)5 Pali-Devanagri",
+    "file": "pages/7919.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN10_Section(10)5_Pali-Devanagri",
+    "translated_blocks": 0,
+    "total_blocks": 0,
+    "updated_at": "2026-08-24T00:48:24.278164+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "AN10 Section(10)5 Pali-English": {
+    "title": "AN10 Section(10)5 Pali-English",
+    "canonical_title": "AN10 Section(10)5 Pali-English",
+    "display_title": "AN10 Section(10)5 Pali-English",
+    "source_display_title": "AN10 Section(10)5 Pali-English",
+    "file": "pages/7918.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN10_Section(10)5_Pali-English",
+    "translated_blocks": 0,
+    "total_blocks": 0,
+    "updated_at": "2026-08-24T00:48:24.645157+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "AN10 Section(11)1 Pali-Devanagri": {
+    "title": "AN10 Section(11)1 Pali-Devanagri",
+    "canonical_title": "AN10 Section(11)1 Pali-Devanagri",
+    "display_title": "AN10 Section(11)1 Pali-Devanagri",
+    "source_display_title": "AN10 Section(11)1 Pali-Devanagri",
+    "file": "pages/7921.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN10_Section(11)1_Pali-Devanagri",
+    "translated_blocks": 0,
+    "total_blocks": 0,
+    "updated_at": "2026-08-24T00:48:24.976411+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
+  },
+  "AN10 Section(11)1 Pali-English": {
+    "title": "AN10 Section(11)1 Pali-English",
+    "canonical_title": "AN10 Section(11)1 Pali-English",
+    "display_title": "AN10 Section(11)1 Pali-English",
+    "source_display_title": "AN10 Section(11)1 Pali-English",
+    "file": "pages/7920.html",
+    "source": "https://tipitaka.fandom.com/wiki/AN10_Section(11)1_Pali-English",
+    "translated_blocks": 0,
+    "total_blocks": 0,
+    "updated_at": "2026-08-24T00:48:25.300335+00:00",
+    "model": "Helsinki-NLP/opus-mt-en-hi",
+    "engine": "free-open-source"
   }
 }
